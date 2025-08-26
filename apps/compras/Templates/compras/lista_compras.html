@@ -2,33 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Compras</title>
+    <title>Módulo de Compras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Lista de Compras</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Proveedor</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for compra in compras %}
-            <tr>
-                <td>{{ compra.descripcion }}</td>
-                <td>{{ compra.fecha }}</td>
-                <td>{{ compra.proveedor }}</td>
-                <td>{{ compra.cantidad }}</td>
-                <td>{{ compra.precio_unitario }}</td>
-                <td>{{ compra.total }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="dashboard-content">
+        <div class="quick-actions-section">
+            <div class="quick-actions-grid">
+                <a href="{% url 'solicitudes_compra' %}" class="quick-action-card">
+                    <div class="action-icon">
+                        <img src="/storage/vectors/clipboard-svgrepo-com.svg" alt="Solicitudes" class="action-icon-img">
+                    </div>
+                    <h3>Solicitudes de Compra</h3>
+                    <p>Ver y gestionar solicitudes de compra</p>
+                </a>
+                <a href="{% url 'gestion_proveedores' %}" class="quick-action-card">
+                    <div class="action-icon">
+                        <img src="/storage/vectors/user-list-svgrepo-com.svg" alt="Proveedores" class="action-icon-img">
+                    </div>
+                    <h3>Red de Proveedores</h3>
+                    <p>Gestionar proveedores registrados</p>
+                </a>
+                <a href="{% url 'lista_compras' %}" class="quick-action-card">
+                    <div class="action-icon">
+                        <img src="/storage/vectors/briefcase-svgrepo-com.svg" alt="Compras" class="action-icon-img">
+                    </div>
+                    <h3>Resumen de Compras</h3>
+                    <p>Ver el historial y resumen de compras</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2 class="section-title">Resumen de Compras Recientes</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                            <th>Proveedor</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for compra in compras %}
+                        <tr>
+                            <td>{{ compra.descripcion }}</td>
+                            <td>{{ compra.fecha }}</td>
+                            <td>{{ compra.proveedor }}</td>
+                            <td>{{ compra.cantidad }}</td>
+                            <td>{{ compra.precio_unitario }}</td>
+                            <td>{{ compra.total }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">No hay compras registradas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
