@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Compras</title>
+</head>
+<body>
+    <h1>Lista de Compras</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Proveedor</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compra in compras %}
+            <tr>
+                <td>{{ compra.descripcion }}</td>
+                <td>{{ compra.fecha }}</td>
+                <td>{{ compra.proveedor }}</td>
+                <td>{{ compra.cantidad }}</td>
+                <td>{{ compra.precio_unitario }}</td>
+                <td>{{ compra.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
