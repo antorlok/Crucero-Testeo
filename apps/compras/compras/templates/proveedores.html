@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Red de Proveedores</title>
+    <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+</head>
+<body>
+    <h1>Registrar Proveedor</h1>
+    <form method="post" id="proveedor-form">
+        {% csrf_token %}
+        <p>
+            {{ form.name.label_tag }} {{ form.name }}
+        </p>
+        <p>
+            {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
+        </p>
+        <p>
+            {{ form.categorie.label_tag }} {{ form.categorie }}
+        </p>
+        <p>
+            {{ form.contact.label_tag }} {{ form.contact }}
+        </p>
+        <p>
+            {{ form.countries.label_tag }} {{ form.countries }}
+        </p>
+        <p>
+            {{ form.sucursal.label_tag }} {{ form.sucursal }}
+        </p>
+        <p>
+            <label for="material-input">Materiales:</label>
+            <input type="text" id="material-input" placeholder="Nombre del material">
+            <button type="button" onclick="addMaterial()">Añadir</button>
+        </p>
+        <ul id="material-list"></ul>
+        <!-- Campo oculto para enviar la lista de materiales -->
+        <input type="hidden" name="materiales_json" id="materiales-json">
+        <button type="submit">Registrar</button>
+    </form>
+    <script src="{% static 'js/script.js' %}"></script>
+    <h2>Proveedores Registrados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Servicio/Producto</th>
+                <th>Categoría</th>
+                <th>Contacto</th>
+                <th>Países</th>
+                <th>Sucursal</th>
+                <th>Materiales</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>{{ proveedor.name }}</td>
+                <td>{{ proveedor.service_or_product }}</td>
+                <td>{{ proveedor.categorie }}</td>
+                <td>{{ proveedor.contact }}</td>
+                <td>{{ proveedor.countries }}</td>
+                <td>{{ proveedor.sucursal }}</td>
+                <td>{% for mat in proveedor.materiales.all %}{{ mat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
