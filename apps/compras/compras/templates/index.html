@@ -170,7 +170,7 @@
                 
                 <div class="quick-actions-section">
                     <div class="quick-actions-grid">
-                        <a href="#" class="quick-action-card">
+                        <a href="#" class="quick-action-card" onclick="mostrarNuevaCompra(event)">
                             <div class="action-icon">
                                 <img src="/storage/vectors/briefcase-svgrepo-com.svg" alt="Compras" class="action-icon-img">
                             </div>
@@ -233,7 +233,7 @@
 
             <!-- Apartado de Proveedores oculto por defecto -->
             <div class="dashboard-content" id="proveedores-content" style="display:none">
-                <button type="button" onclick="devolverDashboard()" style="margin-bottom: 16px;">Devolver</button>
+                <button type="button" onclick="devolverAComprasDashboard()" style="margin-bottom: 16px;">Devolver</button>
                 <h1>Registrar Proveedor</h1>
                 <form method="post" id="proveedor-form">
                     {% csrf_token %}
@@ -310,6 +310,14 @@
                     </script>
                 </table>
             </div>
+
+            <!-- Apartado de Nueva Compra oculto por defecto -->
+            <div class="dashboard-content" id="nueva-compra-content" style="display:none">
+                <button type="button" onclick="devolverAComprasDashboard()" style="margin-bottom: 16px;">Devolver</button>
+                <h1>Registrar Nueva Compra</h1>
+                <p>Aquí irá el formulario para registrar una nueva compra.</p>
+                <!-- El formulario se agregará aquí más tarde -->
+            </div>
         </main>
     </div>
 
@@ -349,6 +357,24 @@
                 item.classList.remove('active');
             });
         }
+
+        function mostrarNuevaCompra(event) {
+            event.preventDefault();
+            document.getElementById('compras-content').style.display = 'none';
+            document.getElementById('proveedores-content').style.display = 'none';
+            document.getElementById('nueva-compra-content').style.display = 'block';
+            document.querySelector('.page-title').textContent = 'Registrar Compra';
+            document.querySelector('.page-subtitle').textContent = 'Rellene los campos para registrar una nueva compra';
+        }
+
+        function devolverAComprasDashboard() {
+            document.getElementById('nueva-compra-content').style.display = 'none';
+            document.getElementById('proveedores-content').style.display = 'none';
+            document.getElementById('compras-content').style.display = 'block';
+            document.querySelector('.page-title').textContent = 'Compras';
+            document.querySelector('.page-subtitle').textContent = 'Gestión de compras, proveedores y solicitudes';
+        }
+        
         // Funciones básicas para el sidebar
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
