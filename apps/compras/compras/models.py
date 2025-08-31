@@ -7,6 +7,8 @@ from django.core.validators import MaxValueValidator
 class SolicitudCompra(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     procesada = models.BooleanField(default=False)
+    barco_id = models.IntegerField(null=True, blank=True, help_text="ID del barco que realiza la solicitud")
+
 
 class SolicitudCompraItem(models.Model):
     solicitud = models.ForeignKey(SolicitudCompra, related_name='items', on_delete=models.CASCADE)
