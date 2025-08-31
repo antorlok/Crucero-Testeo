@@ -1,3 +1,32 @@
+let paises = [];
+function addPais() {
+    const input = document.getElementById('pais-input');
+    const value = input.value.trim();
+    if (value && !paises.includes(value)) {
+        paises.push(value);
+        updatePaisList();
+        input.value = '';
+    }
+}
+function removePais(index) {
+    paises.splice(index, 1);
+    updatePaisList();
+}
+function updatePaisList() {
+    const ul = document.getElementById('pais-list');
+    ul.innerHTML = '';
+    paises.forEach((pais, idx) => {
+        const li = document.createElement('li');
+        li.textContent = pais + ' ';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Eliminar';
+        btn.onclick = () => removePais(idx);
+        li.appendChild(btn);
+        ul.appendChild(li);
+    });
+    document.getElementById('paises-json').value = JSON.stringify(paises);
+}
 function devolverDashboard() {
     document.getElementById('proveedores-content').style.display = 'none';
     document.getElementById('compras-content').style.display = 'block';
@@ -40,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.onsubmit = function(e) {
             e.preventDefault();
             document.getElementById('materiales-json').value = JSON.stringify(materiales);
+            document.getElementById('paises-json').value = JSON.stringify(paises);
             const formData = new FormData(form);
             fetch('/proveedores/', {
                 method: 'POST',

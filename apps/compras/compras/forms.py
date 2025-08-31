@@ -2,13 +2,6 @@ from django import forms
 from .models import Proveedores, Material
 
 class ProveedorForm(forms.ModelForm):
-    materiales = forms.ModelMultipleChoiceField(
-        queryset=Material.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label='Materiales'
-    )
-
     class Meta:
         model = Proveedores
-        fields = '__all__'
+        fields = ['name', 'service_or_product', 'categorie', 'contact', 'sucursal']

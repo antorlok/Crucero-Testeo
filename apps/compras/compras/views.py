@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Proveedores
+from .models import Proveedores, Paises
 from .forms import ProveedorForm
 
 def holamundo(request):
@@ -15,6 +15,8 @@ def proveedores_view(request):
         form = ProveedorForm(request.POST)
         materiales_json = request.POST.get('materiales_json', '[]')
         materiales_nombres = json.loads(materiales_json)
+        paises_json = request.POST.get('paises_json', '[]')
+        paises_nombres = json.loads(paises_json)
         if form.is_valid():
             proveedor = form.save(commit=False)
             proveedor.save()
@@ -23,6 +25,11 @@ def proveedores_view(request):
                 mat, created = Material.objects.get_or_create(nombre=nombre)
                 materiales_objs.append(mat)
             proveedor.materiales.set(materiales_objs)
+            paises_objs = []
+            for nombre in paises_nombres:
+                pais, created = Paises.objects.get_or_create(nombre=nombre)
+                paises_objs.append(pais)
+            proveedor.countries.set(paises_objs)
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 proveedores = Proveedores.objects.all()
                 proveedores_data = [
@@ -31,7 +38,7 @@ def proveedores_view(request):
                         'service_or_product': p.service_or_product,
                         'categorie': p.categorie,
                         'contact': p.contact,
-                        'countries': p.countries,
+                        'countries': [pais.nombre for pais in p.countries.all()],
                         'sucursal': p.sucursal,
                         'materiales': [m.nombre for m in p.materiales.all()]
                     }

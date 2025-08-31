@@ -11,12 +11,15 @@ class Solicitud(models.Model):
 class Material(models.Model):
     nombre = models.CharField(max_length=100)
 
+class Paises(models.Model):
+    nombre = models.CharField(max_length=100)
+
 class Proveedores(models.Model):
     name = models.CharField(max_length=100)
     service_or_product = models.CharField(max_length=100)
     categorie = models.CharField(max_length=100)
     contact = models.CharField(max_length=100)
-    countries = models.CharField(max_length=1000)
+    countries = models.ManyToManyField(Paises)
     sucursal = models.CharField(max_length=100)
     materiales = models.ManyToManyField(Material)
 

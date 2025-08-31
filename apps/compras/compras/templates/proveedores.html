@@ -12,9 +12,13 @@
         {% csrf_token %}
         <p>
             {{ form.name.label_tag }} {{ form.name }}
-        </p>
         <p>
-            {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
+            <label for="pais-input">País:</label>
+            <input type="text" id="pais-input" placeholder="Nombre del país">
+            <button type="button" onclick="addPais()">Añadir</button>
+        </p>
+        <ul id="pais-list"></ul>
+        <input type="hidden" name="paises_json" id="paises-json">
         </p>
         <p>
             {{ form.categorie.label_tag }} {{ form.categorie }}
@@ -23,8 +27,12 @@
             {{ form.contact.label_tag }} {{ form.contact }}
         </p>
         <p>
-            {{ form.countries.label_tag }} {{ form.countries }}
+            <label for="pais-input">País:</label>
+            <input type="text" id="pais-input" placeholder="Nombre del país">
+            <button type="button" onclick="addPais()">Añadir</button>
         </p>
+        <ul id="pais-list"></ul>
+        <input type="hidden" name="paises_json" id="paises-json">
         <p>
             {{ form.sucursal.label_tag }} {{ form.sucursal }}
         </p>
@@ -59,7 +67,11 @@
                 <td>{{ proveedor.service_or_product }}</td>
                 <td>{{ proveedor.categorie }}</td>
                 <td>{{ proveedor.contact }}</td>
-                <td>{{ proveedor.countries }}</td>
+                <td>
+                {% for pais in proveedor.countries.all %}
+                 {{ pais.nombre }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
                 <td>{{ proveedor.sucursal }}</td>
                 <td>{% for mat in proveedor.materiales.all %}{{ mat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
             </tr>

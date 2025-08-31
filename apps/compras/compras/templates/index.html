@@ -250,8 +250,12 @@
                         <label for="id_contact">Contact:</label> <input type="text" name="contact" id="id_contact">
                     </p>
                     <p>
-                        <label for="id_countries">Countries:</label> <input type="text" name="countries" id="id_countries">
+                        <label for="pais-input">País:</label>
+                        <input type="text" id="pais-input" placeholder="Nombre del país">
+                        <button type="button" onclick="addPais()">Añadir</button>
                     </p>
+                    <ul id="pais-list"></ul>
+                    <input type="hidden" name="paises_json" id="paises-json">
                     <p>
                         <label for="id_sucursal">Sucursal:</label> <input type="text" name="sucursal" id="id_sucursal">
                     </p>
@@ -309,7 +313,7 @@
         </main>
     </div>
 
-    <script src="{% static 'js/script-frontend.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
     <script>
         // Mostrar sección de compras y ocultar entretenimiento
         function mostrarCompras(event) {
