@@ -27,13 +27,6 @@
             {{ form.contact.label_tag }} {{ form.contact }}
         </p>
         <p>
-            <label for="pais-input">País:</label>
-            <input type="text" id="pais-input" placeholder="Nombre del país">
-            <button type="button" onclick="addPais()">Añadir</button>
-        </p>
-        <ul id="pais-list"></ul>
-        <input type="hidden" name="paises_json" id="paises-json">
-        <p>
             {{ form.sucursal.label_tag }} {{ form.sucursal }}
         </p>
         <p>
@@ -67,11 +60,17 @@
                 <td>{{ proveedor.service_or_product }}</td>
                 <td>{{ proveedor.categorie }}</td>
                 <td>{{ proveedor.contact }}</td>
-                <td>
-                {% for pais in proveedor.countries.all %}
-                 {{ pais.nombre }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </td>
+                                <td>
+                                {% with paises=proveedor.countries.all %}
+                                    {% if paises|length > 0 %}
+                                        {% for pais in paises %}
+                                            {{ pais.nombre|default:'---' }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        ---
+                                    {% endif %}
+                                {% endwith %}
+                                </td>
                 <td>{{ proveedor.sucursal }}</td>
                 <td>{% for mat in proveedor.materiales.all %}{{ mat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
             </tr>

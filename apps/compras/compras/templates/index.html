@@ -293,7 +293,7 @@
                                 service_or_product: "{{ proveedor.service_or_product|escapejs }}",
                                 categorie: "{{ proveedor.categorie|escapejs }}",
                                 contact: "{{ proveedor.contact|escapejs }}",
-                                countries: "{{ proveedor.countries|escapejs }}",
+                                countries: [{% for pais in proveedor.countries.all %}"{{ pais.nombre|default:'---'|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
                                 sucursal: "{{ proveedor.sucursal|escapejs }}",
                                 materiales: [{% for mat in proveedor.materiales.all %}"{{ mat.nombre|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
                             }{% if not forloop.last %},
