@@ -1,0 +1,6 @@
+-Revisar el código en busca de errores y asegurarse de que sigue las mejores prácticas.
+-Cuidar los errores que puedan darse al momento de utilizar los lenguajes
+-Siempre que sea posible, mejorar el codigo
+-Refactorizar el código para mejorar su legibilidad y mantenimiento siempre que se pueda
+-Eliminar código muerto o no utilizado
+-Evitar carpetas duplicadas con contenido similar o archivos
