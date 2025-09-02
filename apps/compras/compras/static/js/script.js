@@ -1,5 +1,10 @@
-
 // --- FUSIÓN DE script.js Y script-frontend.js ---
+
+// Botón devolver para proveedores.html
+function devolverDashboard() {
+    // Redirigir a la sección de compras (index)
+    window.location.href = '/';
+}
 let paises = [];
 let materiales = [];
 

@@ -5,40 +5,46 @@
     <meta charset="UTF-8">
     <title>Red de Proveedores</title>
     <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/proveedores.css' %}">
     <!-- Eliminado tbody duplicado, la tabla correcta está más abajo -->
-    <form method="post" id="proveedor-form">
-        {% csrf_token %}
-        <p>
-            {{ form.name.label_tag }} {{ form.name }}
-        </p>
-        <p>
-            {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
-        </p>
-        <p>
-            <label for="pais-input">País:</label>
-            <input type="text" id="pais-input" placeholder="Nombre del país">
-            <button type="button" onclick="addPais()">Añadir</button>
-        </p>
-        <ul id="pais-list"></ul>
-        <input type="hidden" name="paises_json" id="paises-json">
-        <p>
-            {{ form.categorie.label_tag }} {{ form.categorie }}
-        </p>
-        <p>
-            {{ form.contact.label_tag }} {{ form.contact }}
-        </p>
-        <p>
-            {{ form.sucursal.label_tag }} {{ form.sucursal }}
-        </p>
-        <p>
-            <label for="material-input">Materiales:</label>
-            <input type="text" id="material-input" placeholder="Nombre del material">
-            <button type="button" onclick="addMaterial()">Añadir</button>
-        </p>
-        <ul id="material-list"></ul>
-        <input type="hidden" name="materiales_json" id="materiales-json">
-        <button type="submit">Registrar</button>
-    </form>
+    <div class="container-proveedores">
+        <form method="post" id="proveedor-form">
+            {% csrf_token %}
+            <p>
+                {{ form.name.label_tag }} {{ form.name }}
+            </p>
+            <p>
+                {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
+            </p>
+            <p>
+                <label for="pais-input">País:</label>
+                <input type="text" id="pais-input" placeholder="Nombre del país">
+                <button type="button" onclick="addPais()">Añadir</button>
+            </p>
+            <ul id="pais-list"></ul>
+            <input type="hidden" name="paises_json" id="paises-json">
+            <p>
+                {{ form.categorie.label_tag }} {{ form.categorie }}
+            </p>
+            <p>
+                {{ form.contact.label_tag }} {{ form.contact }}
+            </p>
+            <p>
+                {{ form.sucursal.label_tag }} {{ form.sucursal }}
+            </p>
+            <p>
+                <label for="material-input">Materiales:</label>
+                <input type="text" id="material-input" placeholder="Nombre del material">
+                <button type="button" onclick="addMaterial()">Añadir</button>
+            </p>
+            <ul id="material-list"></ul>
+            <input type="hidden" name="materiales_json" id="materiales-json">
+            <button type="submit">Registrar</button>
+        </form>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 0;">
+            <button type="button" onclick="window.location.href='{% url 'dashboard' %}'" class="btn-devolver">Devolver</button>
+        </div>
+    </div>
     <script src="{% static 'js/script.js' %}"></script>
     <h2>Proveedores Registrados</h2>
     <table>
