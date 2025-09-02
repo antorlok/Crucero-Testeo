@@ -74,7 +74,13 @@
                 </td>
                 <td>{{ proveedor.sucursal }}</td>
                 <td>{% for mat in proveedor.materiales.all %}{{ mat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
-                <td><button type="button" class="eliminar-proveedor-btn" data-id="{{ proveedor.id }}">Eliminar</button></td>
+                <td>
+                    <form method="post" action="{% url 'eliminar_proveedor' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="proveedor_id" value="{{ proveedor.id }}">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

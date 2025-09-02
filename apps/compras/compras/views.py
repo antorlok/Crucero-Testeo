@@ -1,37 +1,16 @@
-from django.views.decorators.csrf import csrf_protect
 
-# Vista para eliminar proveedor por AJAX
-@csrf_protect
-def eliminar_proveedor(request):
-    from .models import Proveedores
-    import json
-    if request.method == 'POST':
-        try:
-            if request.content_type == 'application/json':
-                data = json.loads(request.body)
-                proveedor_id = data.get('proveedor_id')
-            else:
-                proveedor_id = request.POST.get('proveedor_id')
-            proveedor = Proveedores.objects.get(id=proveedor_id)
-            proveedor.countries.clear()
-            proveedor.materiales.clear()
-            proveedor.delete()
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-    return JsonResponse({'success': False, 'error': 'Método no permitido'})
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from .models import Proveedores, Paises
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_protect
+from .models import Proveedores, Paises, Material
 from .forms import ProveedorForm
 
-def holamundo(request):
-    from .models import Proveedores
-    proveedores = Proveedores.objects.all()
-    return render(request, 'index.html', {'proveedores': proveedores})
 
+@csrf_protect
+def dashboard_view(request):
+    return render(request, 'index.html')
+
+@csrf_protect
 def proveedores_view(request):
-    from .models import Material
     import json
     if request.method == 'POST':
         form = ProveedorForm(request.POST)
@@ -42,37 +21,25 @@ def proveedores_view(request):
         if form.is_valid():
             proveedor = form.save(commit=False)
             proveedor.save()
-            materiales_objs = []
-            for nombre in materiales_nombres:
-                mat, created = Material.objects.get_or_create(nombre=nombre)
-                materiales_objs.append(mat)
+            materiales_objs = [Material.objects.get_or_create(nombre=nombre)[0] for nombre in materiales_nombres]
             proveedor.materiales.set(materiales_objs)
-            paises_objs = []
-            for nombre in paises_nombres:
-                pais, created = Paises.objects.get_or_create(nombre=nombre)
-                paises_objs.append(pais)
+            paises_objs = [Paises.objects.get_or_create(nombre=nombre)[0] for nombre in paises_nombres]
             proveedor.countries.set(paises_objs)
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                proveedores = Proveedores.objects.all()
-                proveedores_data = [
-                    {
-                        'id': p.id,
-                        'name': p.name,
-                        'service_or_product': p.service_or_product,
-                        'categorie': p.categorie,
-                        'contact': p.contact,
-                        'countries': [pais.nombre for pais in p.countries.all()],
-                        'sucursal': p.sucursal,
-                        'materiales': [m.nombre for m in p.materiales.all()]
-                    }
-                    for p in proveedores
-                ]
-                return JsonResponse({'success': True, 'proveedores': proveedores_data})
             return redirect('proveedores')
-        else:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'success': False})
     else:
         form = ProveedorForm()
     proveedores = Proveedores.objects.all()
     return render(request, 'proveedores.html', {'form': form, 'proveedores': proveedores})
+
+@csrf_protect
+def eliminar_proveedor(request):
+    if request.method == 'POST':
+        proveedor_id = request.POST.get('proveedor_id')
+        if not proveedor_id:
+            return redirect('dashboard')
+        proveedor = get_object_or_404(Proveedores, id=proveedor_id)
+        proveedor.countries.clear()
+        proveedor.materiales.clear()
+        proveedor.delete()
+        return redirect('dashboard')
+    return redirect('dashboard')

@@ -1,8 +1,9 @@
 
 from django.urls import path
-from . import views
+from .views import dashboard_view, proveedores_view, eliminar_proveedor
 
 urlpatterns = [
-    path('proveedores/', views.proveedores_view, name='proveedores'),
-    path('proveedores/eliminar/', views.eliminar_proveedor, name='eliminar_proveedor'),
+    path('', dashboard_view, name='dashboard'),
+    path('proveedores/', proveedores_view, name='proveedores'),
+    path('proveedores/eliminar/', eliminar_proveedor, name='eliminar_proveedor'),
 ]

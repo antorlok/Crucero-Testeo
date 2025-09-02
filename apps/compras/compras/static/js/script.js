@@ -1,39 +1,3 @@
-// Eliminar proveedor
-function agregarEventosEliminarProveedor() {
-    document.querySelectorAll('.eliminar-proveedor-btn').forEach(btn => {
-        btn.onclick = function() {
-            const proveedorId = this.getAttribute('data-id');
-            const csrftoken = document.querySelector('input[name=csrfmiddlewaretoken]')?.value;
-            if (confirm('¿Seguro que deseas eliminar este proveedor?')) {
-                if (!csrftoken) {
-                    alert('No se encontró el token CSRF.');
-                    return;
-                }
-                fetch('/proveedores/eliminar/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: JSON.stringify({ proveedor_id: proveedorId })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        this.closest('tr').remove();
-                    } else {
-                        alert('Error al eliminar proveedor: ' + (data.error || 'Error desconocido'));
-                    }
-                })
-                .catch((err) => {
-                    alert('Error de red o del servidor.');
-                    console.error('Error eliminando proveedor:', err);
-                });
-            }
-        };
-    });
-}
 
 // --- FUSIÓN DE script.js Y script-frontend.js ---
 let paises = [];
@@ -126,45 +90,12 @@ function actualizarTablaProveedores(proveedores) {
             <td>${Array.isArray(prov.countries) ? prov.countries.join(', ') : prov.countries}</td>
             <td>${prov.sucursal}</td>
             <td>${Array.isArray(prov.materiales) ? prov.materiales.join(', ') : prov.materiales}</td>
-            <td><button type="button" class="eliminar-proveedor-btn" data-id="${prov.id}">Eliminar</button></td>
         `;
         tbody.appendChild(tr);
     });
     agregarEventosEliminarProveedor();
-    agregarEventosEliminarProveedor();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('proveedor-form');
-    if(form) {
-        form.onsubmit = function(e) {
-            e.preventDefault();
-            // Actualizar los campos ocultos antes de enviar
-            updateMaterialList();
-            updatePaisList();
-            const formData = new FormData(form);
-            fetch('/proveedores/', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    form.reset();
-                    materiales = [];
-                    paises = [];
-                    updateMaterialList();
-                    updatePaisList();
-                    actualizarTablaProveedores(data.proveedores);
-                } else {
-                    alert('Error al registrar proveedor');
-                }
-            })
-            .catch(() => alert('Error de red o del servidor.'));
-        };
-    }
-    agregarEventosEliminarProveedor();
+    // Solo lógica de inicialización, sin AJAX para registrar proveedores
 });
