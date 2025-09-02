@@ -5,13 +5,15 @@
     <meta charset="UTF-8">
     <title>Red de Proveedores</title>
     <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
-</head>
-<body>
-    <h1>Registrar Proveedor</h1>
+    <!-- Eliminado tbody duplicado, la tabla correcta está más abajo -->
     <form method="post" id="proveedor-form">
         {% csrf_token %}
         <p>
             {{ form.name.label_tag }} {{ form.name }}
+        </p>
+        <p>
+            {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
+        </p>
         <p>
             <label for="pais-input">País:</label>
             <input type="text" id="pais-input" placeholder="Nombre del país">
@@ -19,7 +21,6 @@
         </p>
         <ul id="pais-list"></ul>
         <input type="hidden" name="paises_json" id="paises-json">
-        </p>
         <p>
             {{ form.categorie.label_tag }} {{ form.categorie }}
         </p>
@@ -35,7 +36,6 @@
             <button type="button" onclick="addMaterial()">Añadir</button>
         </p>
         <ul id="material-list"></ul>
-        <!-- Campo oculto para enviar la lista de materiales -->
         <input type="hidden" name="materiales_json" id="materiales-json">
         <button type="submit">Registrar</button>
     </form>
@@ -51,28 +51,30 @@
                 <th>Países</th>
                 <th>Sucursal</th>
                 <th>Materiales</th>
+                <th>Acciones</th>
             </tr>
         </thead>
-        <tbody>
+    <tbody id="proveedores-table-body">
             {% for proveedor in proveedores %}
             <tr>
                 <td>{{ proveedor.name }}</td>
                 <td>{{ proveedor.service_or_product }}</td>
                 <td>{{ proveedor.categorie }}</td>
                 <td>{{ proveedor.contact }}</td>
-                                <td>
-                                {% with paises=proveedor.countries.all %}
-                                    {% if paises|length > 0 %}
-                                        {% for pais in paises %}
-                                            {{ pais.nombre|default:'---' }}{% if not forloop.last %}, {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        ---
-                                    {% endif %}
-                                {% endwith %}
-                                </td>
+                <td>
+                    {% with paises=proveedor.countries.all %}
+                        {% if paises|length > 0 %}
+                            {% for pais in paises %}
+                                {{ pais.nombre|default:'---' }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            ---
+                        {% endif %}
+                    {% endwith %}
+                </td>
                 <td>{{ proveedor.sucursal }}</td>
                 <td>{% for mat in proveedor.materiales.all %}{{ mat.nombre }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                <td><button type="button" class="eliminar-proveedor-btn" data-id="{{ proveedor.id }}">Eliminar</button></td>
             </tr>
             {% endfor %}
         </tbody>

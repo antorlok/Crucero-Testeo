@@ -1,3 +1,25 @@
+from django.views.decorators.csrf import csrf_protect
+
+# Vista para eliminar proveedor por AJAX
+@csrf_protect
+def eliminar_proveedor(request):
+    from .models import Proveedores
+    import json
+    if request.method == 'POST':
+        try:
+            if request.content_type == 'application/json':
+                data = json.loads(request.body)
+                proveedor_id = data.get('proveedor_id')
+            else:
+                proveedor_id = request.POST.get('proveedor_id')
+            proveedor = Proveedores.objects.get(id=proveedor_id)
+            proveedor.countries.clear()
+            proveedor.materiales.clear()
+            proveedor.delete()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Proveedores, Paises
@@ -34,6 +56,7 @@ def proveedores_view(request):
                 proveedores = Proveedores.objects.all()
                 proveedores_data = [
                     {
+                        'id': p.id,
                         'name': p.name,
                         'service_or_product': p.service_or_product,
                         'categorie': p.categorie,
