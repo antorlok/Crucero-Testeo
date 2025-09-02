@@ -40,6 +40,9 @@
         <button type="submit">Registrar</button>
     </form>
     <script src="{% static 'js/script.js' %}"></script>
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+        <button type="button" onclick="window.location.href='{% url 'dashboard' %}'" class="btn-devolver">Devolver</button>
+    </div>
     <h2>Proveedores Registrados</h2>
     <table>
         <thead>
