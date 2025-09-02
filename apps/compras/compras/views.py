@@ -36,10 +36,10 @@ def eliminar_proveedor(request):
     if request.method == 'POST':
         proveedor_id = request.POST.get('proveedor_id')
         if not proveedor_id:
-            return redirect('dashboard')
+            return redirect('proveedores')
         proveedor = get_object_or_404(Proveedores, id=proveedor_id)
         proveedor.countries.clear()
         proveedor.materiales.clear()
         proveedor.delete()
-        return redirect('dashboard')
-    return redirect('dashboard')
+        return redirect('proveedores')
+    return redirect('proveedores')
