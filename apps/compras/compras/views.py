@@ -17,7 +17,17 @@ def procesar_solicitud_view(request, solicitud_id):
 
 def compras_registradas_view(request):
     from .models import Compra
-    compras = Compra.objects.all().order_by('-fecha')
+    if request.method == 'POST':
+        compra_id = request.POST.get('compra_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if compra_id and nuevo_estado:
+            try:
+                compra = Compra.objects.get(id=compra_id)
+                compra.estado = nuevo_estado
+                compra.save()
+            except Compra.DoesNotExist:
+                pass
+    compras = Compra.objects.exclude(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
     return render(request, 'compras_registradas.html', {'compras': compras})
 import json
 from .models import Compra, CompraPorProveedor, ProveedorMaterial
@@ -178,3 +188,7 @@ def eliminar_proveedor(request):
         proveedor.delete()
         return redirect('proveedores')
     return redirect('proveedores')
+def historial_compras_view(request):
+    from .models import Compra
+    compras = Compra.objects.filter(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
+    return render(request, 'historial_compras.html', {'compras': compras})
