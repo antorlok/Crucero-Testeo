@@ -31,7 +31,17 @@
                     <tr>
                         <td>{{ compra.id }}</td>
                         <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
-                        <td>{{ compra.get_estado_display }}</td>
+                        <td>
+                            <form method="post" action="" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="compra_id" value="{{ compra.id }}">
+                                <select name="nuevo_estado" onchange="this.form.submit()">
+                                    {% for key, value in compra.ESTADO_CHOICES %}
+                                        <option value="{{ key }}" {% if compra.estado == key %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
                         <td>{{ detalle.proveedor.name }}</td>
                         <td>{{ detalle.material.nombre }}</td>
                         <td>{{ detalle.descripcion }}</td>

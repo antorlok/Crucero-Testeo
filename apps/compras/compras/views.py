@@ -2,6 +2,13 @@
 
 def compras_registradas_view(request):
     from .models import Compra
+    if request.method == 'POST':
+        compra_id = request.POST.get('compra_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if compra_id and nuevo_estado:
+            compra = Compra.objects.get(id=compra_id)
+            compra.estado = nuevo_estado
+            compra.save()
     compras = Compra.objects.all().order_by('-fecha')
     return render(request, 'compras_registradas.html', {'compras': compras})
 import json
