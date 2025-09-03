@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Solicitud de Compra</title>
+    <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+</head>
+<body>
+    <h2>Detalle de Solicitud de Compra</h2>
+    <p><strong>ID:</strong> {{ solicitud.id }}</p>
+    <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
+    <p><strong>Barco ID:</strong> {{ solicitud.barco_id }}</p>
+    <h3>Artículos</h3>
+    <ul>
+        {% for item in solicitud.items.all %}
+            <li>{{ item.nombre }} - {{ item.cantidad }} {{ item.medida }}</li>
+        {% empty %}
+            <li>No hay artículos</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
+</body>
+</html>

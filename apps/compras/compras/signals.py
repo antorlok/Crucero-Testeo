@@ -1,7 +1,8 @@
-from apps.almacen.signals import productosSignal
+# from apps.almacen.signals import productosSignal
+from django.dispatch import Signal
 
 # Función receptora de la señal productosSignal
-@productosSignal.connect
+# @productosSignal.connect
 def productos_bajos_receiver(sender, **kwargs):
     productos = kwargs.get('productos')
 
@@ -17,3 +18,10 @@ def productos_bajos_receiver(sender, **kwargs):
                 medida=getattr(producto, 'medida', '')
             )
 
+monto_mensaje_signal = Signal()
+
+def enviar_monto_mensaje(monto, mensaje):
+    """
+    Envía un signal con un monto y un mensaje usando Django signals.
+    """
+    monto_mensaje_signal.send(sender=None, monto=monto, mensaje=mensaje)
