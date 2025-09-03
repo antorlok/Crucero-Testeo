@@ -10,28 +10,33 @@
     <div class="container-proveedores">
         <form method="post" id="proveedor-form">
             {% csrf_token %}
-            <p>
-                {{ form.name.label_tag }} {{ form.name }}
-            </p>
-            <p>
-                {{ form.service_or_product.label_tag }} {{ form.service_or_product }}
-            </p>
-            <p>
+            <div class="form-row">
+                <label for="id_name">Nombre:</label>
+                {{ form.name }}
+            </div>
+            <div class="form-row">
+                <label for="id_service_or_product">Servicio o producto:</label>
+                {{ form.service_or_product }}
+            </div>
+            <div class="form-row">
                 <label for="pais-input">País:</label>
                 <input type="text" id="pais-input" placeholder="Nombre del país">
                 <button type="button" onclick="addPais()">Añadir</button>
-            </p>
+            </div>
             <ul id="pais-list"></ul>
             <input type="hidden" name="paises_json" id="paises-json">
-            <p>
-                {{ form.categorie.label_tag }} {{ form.categorie }}
-            </p>
-            <p>
-                {{ form.contact.label_tag }} {{ form.contact }}
-            </p>
-            <p>
-                {{ form.sucursal.label_tag }} {{ form.sucursal }}
-            </p>
+            <div class="form-row">
+                <label for="id_categorie">Categoría:</label>
+                {{ form.categorie }}
+            </div>
+            <div class="form-row">
+                <label for="id_contact">Contacto:</label>
+                {{ form.contact }}
+            </div>
+            <div class="form-row">
+                <label for="id_sucursal">Sucursal:</label>
+                {{ form.sucursal }}
+            </div>
             <p>
                 <label for="material-input">Material:</label>
                 <input type="text" id="material-input" placeholder="Nombre del material">

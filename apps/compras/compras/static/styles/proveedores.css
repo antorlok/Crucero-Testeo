@@ -23,9 +23,9 @@ h2 {
 }
 
 form#proveedor-form {
-    display: grid; /* Usar CSS Grid para una mejor organización */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Columnas flexibles */
-    gap: 20px; /* Espacio entre elementos */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     background: #f8fafc;
     border-radius: 8px;
     padding: 24px;
@@ -33,10 +33,36 @@ form#proveedor-form {
     margin-bottom: 32px;
 }
 
-form#proveedor-form p {
-    margin: 0; /* Eliminar márgenes por defecto de los párrafos */
+
+.form-row {
     display: flex;
-    flex-direction: column; /* Apilar label e input */
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.form-row label {
+    min-width: 120px;
+    font-weight: 500;
+    color: #2d3a4a;
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row select {
+    flex: 1 1 220px;
+    padding: 8px 12px;
+    border: 1px solid #cfd8dc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.form-row button[type="button"] {
+    margin-left: 8px;
 }
 
 form label {
@@ -88,17 +114,31 @@ button[type="submit"], button[type="button"], .btn-devolver {
     color: #fff;
     border: none;
     border-radius: 6px;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 6px 14px;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: background 0.2s;
     margin-top: 8px;
+    width: 120px;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 /* Botón Registrar (submit del formulario) */
 form#proveedor-form button[type="submit"] {
     padding: 8px 18px; /* Reducido de 10px 20px */
-    font-size: 1rem;
+        padding: 6px 14px;
+        font-size: 0.95rem;
+        width: auto;
+    width: 120px;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    width: 120px;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 /* Ajuste para el botón Registrar en la tabla (si aplica) */
