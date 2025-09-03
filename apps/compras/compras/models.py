@@ -51,13 +51,15 @@ class Proveedores(models.Model):
 # Modelo para compras registradas con campo de estado y datos en otro modelo
 class Compra(models.Model):
     ESTADO_CHOICES = [
-        ('registrada', 'Registrada'),
-        ('procesada', 'Procesada'),
-        ('finalizada', 'Finalizada'),
+        ('registrada', 'Registradas'),
+        ('esperando_revision', 'Esperando por revision'),
+        ('exitosa', 'Exitosa'),
         ('cancelada', 'Cancelada'),
     ]
     fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=12, choices=ESTADO_CHOICES, default='registrada')
+    estado = models.CharField(max_length=18, choices=ESTADO_CHOICES, default='registrada')
+    pais_entrega = models.ForeignKey('Paises', on_delete=models.PROTECT, null=True, blank=True, related_name='compras_entrega')
+    sitio_llegada = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"Compra #{self.id} - {self.get_estado_display()}"
@@ -73,8 +75,18 @@ UNIDAD_CHOICES = [
 class CompraPorProveedor(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
     proveedor = models.ForeignKey('Proveedores', on_delete=models.CASCADE)
-    material = models.ForeignKey('Material', on_delete=models.CASCADE)
+    materiales = models.ManyToManyField('Material', through='CompraPorProveedorMaterial', related_name='compras_por_proveedor')
     descripcion = models.CharField(max_length=255)
+
+
+    # El total ahora se calcula por producto en la tabla intermedia
+    def __str__(self):
+        return f"{self.compra} - {self.proveedor.name}"
+
+# Relación intermedia para productos en la compra por proveedor
+class CompraPorProveedorMaterial(models.Model):
+    compra_por_proveedor = models.ForeignKey(CompraPorProveedor, on_delete=models.CASCADE)
+    material = models.ForeignKey('Material', on_delete=models.CASCADE)
     unidad = models.CharField(max_length=10, choices=UNIDAD_CHOICES)
     cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     precio_unitario = models.DecimalField(max_digits=12, decimal_places=2)
@@ -83,6 +95,9 @@ class CompraPorProveedor(models.Model):
     def save(self, *args, **kwargs):
         self.total = self.cantidad * self.precio_unitario
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.material.nombre} x {self.cantidad} ({self.compra_por_proveedor.proveedor.name})"
 
     def __str__(self):
         return f"{self.compra} - {self.proveedor.name} - {self.material.nombre}"
