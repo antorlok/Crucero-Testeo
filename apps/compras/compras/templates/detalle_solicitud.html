@@ -8,9 +8,8 @@
 </head>
 <body>
     <h2>Detalle de Solicitud de Compra</h2>
-    <p><strong>ID:</strong> {{ solicitud.id }}</p>
     <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-    <p><strong>Barco ID:</strong> {{ solicitud.barco_id }}</p>
+    <!-- <p><strong>Barco ID:</strong> {{ solicitud.barco_id }}</p> eliminado -->
     <h3>Artículos</h3>
     <ul>
         {% for item in solicitud.items.all %}

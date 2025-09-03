@@ -13,7 +13,6 @@
     <table>
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Fecha</th>
                     <th>Estado</th>
                     <th>Proveedor</th>
@@ -29,7 +28,6 @@
                 {% for compra in compras %}
                     {% for detalle in compra.detalles.all %}
                     <tr>
-                        <td>{{ compra.id }}</td>
                         <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
                         <td>
                             <form method="post" action="" style="display:inline;">

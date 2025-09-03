@@ -8,8 +8,6 @@ from django.core.validators import MaxValueValidator
 # Solicitud de compra que agrupa varios artículos
 class SolicitudCompra(models.Model):
     procesada = models.BooleanField(default=False)
-    barco_id = models.IntegerField(null=True, blank=True, help_text="ID del barco que realiza la solicitud")
-
 
 class SolicitudCompraItem(models.Model):
     solicitud = models.ForeignKey(SolicitudCompra, related_name='items', on_delete=models.CASCADE)

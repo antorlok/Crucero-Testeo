@@ -17,13 +17,6 @@ def procesar_solicitud_view(request, solicitud_id):
 
 def compras_registradas_view(request):
     from .models import Compra
-    if request.method == 'POST':
-        compra_id = request.POST.get('compra_id')
-        nuevo_estado = request.POST.get('nuevo_estado')
-        if compra_id and nuevo_estado:
-            compra = Compra.objects.get(id=compra_id)
-            compra.estado = nuevo_estado
-            compra.save()
     compras = Compra.objects.all().order_by('-fecha')
     return render(request, 'compras_registradas.html', {'compras': compras})
 import json
@@ -79,11 +72,10 @@ from .models import SolicitudCompra, SolicitudCompraItem
 @csrf_protect
 def registrar_solicitud_compra_view(request):
     if request.method == 'POST':
-        barco_id = request.POST.get('barco_id')
         nombres = request.POST.getlist('nombre[]')
         cantidades = request.POST.getlist('cantidad[]')
         medidas = request.POST.getlist('medida[]')
-        solicitud = SolicitudCompra.objects.create(barco_id=barco_id)
+        solicitud = SolicitudCompra.objects.create()
         for nombre, cantidad, medida in zip(nombres, cantidades, medidas):
             SolicitudCompraItem.objects.create(
                 solicitud=solicitud,
