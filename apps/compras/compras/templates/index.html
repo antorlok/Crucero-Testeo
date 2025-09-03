@@ -167,10 +167,9 @@
             </div>
             <!-- Contenido de Compras oculto por defecto -->
             <div class="dashboard-content" id="compras-content" style="display:none">
-                
                 <div class="quick-actions-section">
                     <div class="quick-actions-grid">
-                        <a href="#" class="quick-action-card" onclick="mostrarNuevaCompra(event)">
+                        <a href="{% url 'compras_registradas' %}" class="quick-action-card">
                             <div class="action-icon">
                                 <img src="/storage/vectors/briefcase-svgrepo-com.svg" alt="Compras" class="action-icon-img">
                             </div>

@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Compra</title>
+    <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Registrar Compra</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label for="proveedor">Proveedor:</label>
+                <select name="proveedor" id="proveedor-select" required>
+                    <option value="">Seleccione un proveedor</option>
+                    {% for proveedor in proveedores %}
+                        <option value="{{ proveedor.id }}">{{ proveedor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="descripcion">Descripción:</label>
+                <input type="text" name="descripcion" id="descripcion" required>
+            </div>
+            <div>
+                <label for="material">Material:</label>
+                <select name="material" id="material-select" required>
+                    <option value="">Seleccione un material</option>
+                    <!-- Opciones se llenarán dinámicamente vía JS según proveedor -->
+                </select>
+            </div>
+            <div>
+                <label for="unidad">Unidad:</label>
+                <select name="unidad" id="unidad" required>
+                    <option value="kg">Kg</option>
+                    <option value="und">Unidad</option>
+                    <option value="l">Litro</option>
+                </select>
+            </div>
+            <div>
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad" min="1" step="0.01" required>
+            </div>
+            <div>
+                <label for="precio_unitario">Precio unitario:</label>
+                <input type="number" name="precio_unitario" id="precio_unitario" min="0" step="0.01" required readonly>
+            </div>
+            <div>
+                <label for="total">Total:</label>
+                <input type="number" name="total" id="total" min="0" step="0.01" readonly>
+            </div>
+            <button type="submit">Registrar Compra</button>
+        </form>
+        <button onclick="window.location.href='/'">Volver al Dashboard</button>
+    </div>
+    <script>
+        // Diccionario de materiales por proveedor y sus precios
+        const proveedorMateriales = {{ proveedor_materiales_json|safe }};
+        const proveedorSelect = document.getElementById('proveedor-select');
+        const materialSelect = document.getElementById('material-select');
+        const precioUnitarioInput = document.getElementById('precio_unitario');
+        const cantidadInput = document.getElementById('cantidad');
+        const totalInput = document.getElementById('total');
+
+        proveedorSelect.addEventListener('change', function() {
+            const proveedorId = this.value;
+            materialSelect.innerHTML = '<option value="">Seleccione un material</option>';
+            if (proveedorMateriales[proveedorId]) {
+                proveedorMateriales[proveedorId].forEach(function(mat) {
+                    const option = document.createElement('option');
+                    option.value = mat.id;
+                    option.textContent = mat.nombre;
+                    option.setAttribute('data-precio', mat.costo);
+                    materialSelect.appendChild(option);
+                });
+            }
+            precioUnitarioInput.value = '';
+            totalInput.value = '';
+        });
+
+        materialSelect.addEventListener('change', function() {
+            const selected = this.options[this.selectedIndex];
+            const precio = selected.getAttribute('data-precio');
+            precioUnitarioInput.value = precio || '';
+            calcularTotal();
+        });
+
+        cantidadInput.addEventListener('input', calcularTotal);
+        precioUnitarioInput.addEventListener('input', calcularTotal);
+
+        function calcularTotal() {
+            const cantidad = parseFloat(cantidadInput.value) || 0;
+            const precio = parseFloat(precioUnitarioInput.value) || 0;
+            totalInput.value = (cantidad * precio).toFixed(2);
+        }
+    </script>
+</body>
+</html>

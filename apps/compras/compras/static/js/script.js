@@ -6,6 +6,7 @@ function devolverDashboard() {
     window.location.href = '/';
 }
 let paises = [];
+
 let materiales = [];
 
 function addPais() {
@@ -40,23 +41,23 @@ function updatePaisList() {
 
 function addMaterial() {
     const input = document.getElementById('material-input');
-    const value = input.value.trim();
-    if (value && !materiales.includes(value)) {
-        materiales.push(value);
+    const costoInput = document.getElementById('costo-material-input');
+    const nombre = input.value.trim();
+    const costo = costoInput.value.trim();
+    if (nombre && costo && !materiales.some(m => m.nombre === nombre)) {
+        materiales.push({ nombre, costo });
         updateMaterialList();
         input.value = '';
+        costoInput.value = '';
     }
 }
-function removeMaterial(index) {
-    materiales.splice(index, 1);
-    updateMaterialList();
-}
+
 function updateMaterialList() {
     const ul = document.getElementById('material-list');
     ul.innerHTML = '';
     materiales.forEach((mat, idx) => {
         const li = document.createElement('li');
-        li.textContent = mat + ' ';
+        li.textContent = `${mat.nombre} (Costo: $${mat.costo}) `;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = 'Eliminar';
