@@ -1,3 +1,18 @@
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+# View para mostrar detalles de una solicitud
+def detalle_solicitud_view(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudCompra, id=solicitud_id)
+    return render(request, 'detalle_solicitud.html', {'solicitud': solicitud})
+
+# View para procesar una solicitud
+def procesar_solicitud_view(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudCompra, id=solicitud_id)
+    if request.method == 'POST':
+        solicitud.procesada = True
+        solicitud.save()
+        return HttpResponseRedirect(reverse('lista_solicitudes'))
+    return HttpResponseRedirect(reverse('lista_solicitudes'))
 # Vista para mostrar compras registradas
 
 def compras_registradas_view(request):
@@ -50,6 +65,32 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from .models import Proveedores, Paises, Material
 from .forms import ProveedorForm
+
+from .models import SolicitudCompra, SolicitudCompraItem
+
+# View para registrar solicitud de compra
+@csrf_protect
+def registrar_solicitud_compra_view(request):
+    if request.method == 'POST':
+        barco_id = request.POST.get('barco_id')
+        nombres = request.POST.getlist('nombre[]')
+        cantidades = request.POST.getlist('cantidad[]')
+        medidas = request.POST.getlist('medida[]')
+        solicitud = SolicitudCompra.objects.create(barco_id=barco_id)
+        for nombre, cantidad, medida in zip(nombres, cantidades, medidas):
+            SolicitudCompraItem.objects.create(
+                solicitud=solicitud,
+                nombre=nombre,
+                cantidad=cantidad,
+                medida=medida
+            )
+        return redirect('lista_solicitudes')
+    return render(request, 'solicitud_compra_form.html')
+
+# View para listar solicitudes de compra
+def lista_solicitudes_view(request):
+    solicitudes = SolicitudCompra.objects.prefetch_related('items').order_by('-id')
+    return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes})
 
 
 @csrf_protect

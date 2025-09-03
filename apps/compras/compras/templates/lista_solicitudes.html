@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Solicitudes de Compra</title>
+    <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+</head>
+<body>
+    <a href="{% url 'dashboard' %}"><button>Volver</button></a>
+    <h2>Lista de Solicitudes de Compra</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Procesada</th>
+                <th>Barco ID</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for solicitud in solicitudes %}
+            <tr>
+                <td>{{ solicitud.id }}</td>
+                <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
+                <td>{{ solicitud.barco_id }}</td>
+                <td>
+                    <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
+                    <form method="post" action="{% url 'procesar_solicitud' solicitud.id %}" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea procesar esta solicitud?');">
+                        {% csrf_token %}
+                        <button type="submit" {% if solicitud.procesada %}disabled{% endif %}>Procesar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No hay solicitudes registradas.</td></tr>
+    <a href="{% url 'dashboard' %}"><button>Volver</button></a>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
