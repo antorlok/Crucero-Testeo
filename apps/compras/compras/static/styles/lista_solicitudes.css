@@ -1,3 +1,51 @@
+/* --- Estilos para detalle de solicitud --- */
+.detalle-container {
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 16px rgba(30,41,59,0.08);
+	width: 60%;
+	margin: 40px auto 0 auto;
+	padding: 32px 40px;
+	min-width: 320px;
+}
+
+.detalle-container h2 {
+	color: #1e293b;
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 18px;
+}
+
+.detalle-container h3 {
+	color: #2563eb;
+	font-size: 1.2rem;
+	margin-top: 24px;
+	margin-bottom: 12px;
+}
+
+.detalle-container p {
+	font-size: 1.08rem;
+	color: #334155;
+	margin: 8px 0;
+}
+
+.detalle-container ul {
+	background: #f3f6fa;
+	border-radius: 10px;
+	padding: 18px 24px;
+	margin: 0 0 24px 0;
+	list-style: disc inside;
+	color: #334155;
+	font-size: 1.05rem;
+}
+
+.detalle-container li {
+	margin-bottom: 8px;
+}
+
+.detalle-container a button {
+	margin-top: 18px;
+}
 body {
 	background: #f8fafc;
 	font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,6 +60,7 @@ h2 {
 	font-size: 2rem;
 	font-weight: 700;
 	letter-spacing: -1px;
+	text-align: center;
 }
 
 table {

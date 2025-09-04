@@ -5,19 +5,22 @@
     <meta charset="UTF-8">
     <title>Detalle de Solicitud de Compra</title>
     <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/lista_solicitudes.css' %}">
 </head>
 <body>
-    <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
-    <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
-    <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-    <h3>Artículos</h3>
-    <ul>
-        {% for item in solicitud.items.all %}
-            <li>{{ item.nombre }} - {{ item.cantidad }} {{ item.medida }}</li>
-        {% empty %}
-            <li>No hay artículos</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
+    <div class="detalle-container">
+        <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
+        <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
+        <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
+        <h3>Artículos</h3>
+        <ul>
+            {% for item in solicitud.items.all %}
+                <li>{{ item.nombre }} - {{ item.cantidad }} {{ item.medida }}</li>
+            {% empty %}
+                <li>No hay artículos</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'lista_solicitudes' %}"><button class="volver-btn">Volver</button></a>
+    </div>
 </body>
 </html>
