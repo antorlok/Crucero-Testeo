@@ -110,7 +110,7 @@ input[type="text"], select {
 }
 
 button[type="submit"], button[type="button"], .btn-devolver {
-    background: #2d3a4a;
+    background: #2563eb;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -157,7 +157,7 @@ form[action] button[type="submit"]:hover {
 }
 
 button[type="submit"]:hover, button[type="button"]:hover, .btn-devolver:hover {
-    background: #1a2533;
+    background: #1746b0;
 }
 
 /* Estilos para las listas de países y materiales */

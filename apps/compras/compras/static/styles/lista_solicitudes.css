@@ -1,0 +1,92 @@
+body {
+	background: #f8fafc;
+	font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+h2 {
+	margin-top: 32px;
+	margin-bottom: 24px;
+	color: #1e293b;
+	font-size: 2rem;
+	font-weight: 700;
+	letter-spacing: -1px;
+}
+
+table {
+	width: 80%;
+	margin: 0 auto;
+	border-collapse: separate;
+	border-spacing: 0;
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 16px rgba(30,41,59,0.08);
+	overflow: hidden;
+}
+
+th, td {
+	padding: 14px 18px;
+	text-align: center;
+}
+
+th {
+	background: #2563eb;
+	color: #fff;
+	font-weight: 600;
+	font-size: 1.05rem;
+	border-bottom: 2px solid #e5e7eb;
+}
+
+tr:nth-child(even) td {
+	background: #f3f6fa;
+}
+
+tr:hover td {
+	background: #e0e7ff;
+	transition: background 0.2s;
+}
+
+button {
+	background: #2563eb;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	padding: 7px 18px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	margin: 0 2px;
+	transition: background 0.2s, box-shadow 0.2s;
+	box-shadow: 0 1px 4px rgba(37,99,235,0.08);
+}
+
+button:disabled {
+	background: #a5b4fc;
+	color: #e0e7ff;
+	cursor: not-allowed;
+}
+
+a button {
+	margin-right: 4px;
+}
+
+a {
+	text-decoration: none;
+}
+
+.volver-btn {
+	margin: 24px 0 0 32px;
+	background: #fff;
+	color: #2563eb;
+	border: 1px solid #2563eb;
+	font-weight: 600;
+	padding: 7px 18px;
+	border-radius: 8px;
+	box-shadow: none;
+	transition: background 0.2s, color 0.2s;
+}
+.volver-btn:hover {
+	background: #2563eb;
+	color: #fff;
+}
