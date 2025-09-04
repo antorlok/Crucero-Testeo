@@ -11,13 +11,30 @@
     <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
     <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
     <h3>Artículos</h3>
-    <ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Medida</th>
+                <th>Tipo</th>
+                <th>Subtipo</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for item in solicitud.items.all %}
-            <li>{{ item.nombre }} - {{ item.cantidad }} {{ item.medida }}</li>
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.medida }}</td>
+                <td>{{ item.tipo }}</td>
+                <td>{{ item.subtipo }}</td>
+            </tr>
         {% empty %}
-            <li>No hay artículos</li>
+            <tr><td colspan="5">No hay artículos</td></tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
     <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
 </body>
 </html>
