@@ -16,6 +16,8 @@ class SolicitudCompraItem(models.Model):
     nombre = models.CharField(max_length=200)
     cantidad = models.IntegerField(validators=[MaxValueValidator(10000)])
     medida = models.CharField(max_length=20)
+    tipo = models.CharField(max_length=50, blank=True, null=True)
+    subtipo = models.CharField(max_length=50, blank=True, null=True)
 
 class Solicitud(models.Model):
     name = models.CharField(max_length=2000)

@@ -8,19 +8,34 @@
     <link rel="stylesheet" href="{% static 'styles/lista_solicitudes.css' %}">
 </head>
 <body>
-    <div class="detalle-container">
-        <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
-        <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
-        <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-        <h3>Artículos</h3>
-        <ul>
-            {% for item in solicitud.items.all %}
-                <li>{{ item.nombre }} - {{ item.cantidad }} {{ item.medida }}</li>
-            {% empty %}
-                <li>No hay artículos</li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'lista_solicitudes' %}"><button class="volver-btn">Volver</button></a>
-    </div>
+    <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
+    <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
+    <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
+    <h3>Artículos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Medida</th>
+                <th>Tipo</th>
+                <th>Subtipo</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in solicitud.items.all %}
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.medida }}</td>
+                <td>{{ item.tipo }}</td>
+                <td>{{ item.subtipo }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5">No hay artículos</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
 </body>
 </html>
