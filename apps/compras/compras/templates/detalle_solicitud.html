@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
 </head>
 <body>
-    <h2>Detalle de Solicitud de Compra</h2>
+    <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
+    <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
     <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-    <!-- <p><strong>Barco ID:</strong> {{ solicitud.barco_id }}</p> eliminado -->
     <h3>Artículos</h3>
     <ul>
         {% for item in solicitud.items.all %}
