@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="{% static 'styles/lista_solicitudes.css' %}">
 </head>
 <body>
-    <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
-    <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
-    <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-    <h3>Artículos</h3>
+    <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 18px;">
+    <a href="{% url 'lista_solicitudes' %}"><button class="volver-btn">Volver</button></a>
+    </div>
+    <h2 style="text-align:center;">Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
+    <p style="text-align:center;"><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
+    <p style="text-align:center;"><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
+    <h3 style="text-align:center;">Artículos</h3>
+
     <table>
         <thead>
             <tr>
@@ -36,6 +40,6 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
+ 
 </body>
 </html>
