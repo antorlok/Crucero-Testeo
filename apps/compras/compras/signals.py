@@ -32,10 +32,12 @@ def manejar_decision_solicitud(sender, id, aceptado, mensaje, **kwargs):
 			compra_lote.estado = 'En espera por revisión'
 			# Enviar signal con el lote completo
 			lote_signal = Signal()
+			compra_lote.notas_compra = mensaje
 			lote_signal.send(sender=None, compra_lote=compra_lote)
 		else:
 			compra_lote.estado = 'Cancelada'
 			solicitud = compra_lote.solicitud
+			compra_lote.notas_compra = mensaje
 			if solicitud and solicitud.procesada:
 				solicitud.procesada = False
 				solicitud.save()
@@ -113,11 +115,13 @@ def manejar_decision_solicitud_almacen(sender, id, aceptado, mensaje, **kwargs):
 		compra_lote = CompraLote.objects.get(id=id)
 		if aceptado:
 			compra_lote.estado = 'Exitosa'
+			compra_lote.notas_compra = mensaje
 		else:
 			compra_lote.estado = 'Defectuosa'
 			# Buscar y actualizar la solicitud asociada usando la relación directa
 			solicitud = compra_lote.solicitud
 			if solicitud and solicitud.procesada:
+				compra_lote.notas_compra = mensaje
 				solicitud.procesada = False
 				solicitud.save()
 				# Nuevo signal para compras defectuosas

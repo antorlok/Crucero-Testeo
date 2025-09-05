@@ -60,7 +60,11 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def procesar_materiales_solicitud_view(request, solicitud_id):
     from .models import SolicitudSubtipo, SolicitudSubtipoItem, Proveedores, CompraLote, CompraLoteItem
+
+# importacion de almacen, descomentar
     # from .signals import solicitud_compra_administracion
+
+
     solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
     materiales = solicitud.items.all()
     proveedores = Proveedores.objects.filter(tipo=solicitud.tipo, subtipo=solicitud.subtipo)
@@ -89,8 +93,21 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
                 medida=item.medida,
                 cantidad=cantidad or 0
             )
-        # Enviar signal a administración
+
+
+        # Enviar signal a administración, descomentar
         # solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
+
+        ##bloque fake, quitar
+        from django.dispatch import Signal
+        compra_lote.estado = 'En espera por revisión'
+		# Enviar signal con el lote completo
+        lote_signal = Signal()
+        lote_signal.send(sender=None, compra_lote=compra_lote)
+
+
+        ####
+
         solicitud.procesada = True
         solicitud.save()
         return redirect('lista_solicitudes')
@@ -321,13 +338,20 @@ def proveedores_view(request):
 
 @csrf_protect
 def eliminar_proveedor(request):
+    from .models import CompraLote
+    from django.contrib import messages
     if request.method == 'POST':
         proveedor_id = request.POST.get('proveedor_id')
         if not proveedor_id:
             return redirect('proveedores')
         proveedor = get_object_or_404(Proveedores, id=proveedor_id)
-    proveedor.countries.clear()
-    proveedor.delete()
+        # Validar si el proveedor está asignado a una compra lote activa
+        compras_lote = CompraLote.objects.filter(proveedor=proveedor, estado__in=['registrada', 'espera_revision'])
+        if compras_lote.exists():
+            messages.error(request, 'No se puede eliminar el proveedor porque está asignado a una compra registrada o en espera por revisión.')
+            return redirect('proveedores')
+        proveedor.countries.clear()
+        proveedor.delete()
     return redirect('proveedores')
 def historial_compras_view(request):
     from .models import Compra, CompraLote
