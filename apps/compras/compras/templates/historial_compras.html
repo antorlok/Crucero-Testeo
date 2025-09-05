@@ -20,9 +20,9 @@
                     <th>Ubicación</th>
                     <th>Proveedor</th>
                     <th>Puerto Entrega</th>
-                    <th>Notas</th>
                     <th>Presupuesto</th>
                     <th>Estado</th>
+                    <th>Notas</th>
                     <th>Artículos</th>
                 </tr>
             </thead>
@@ -35,9 +35,9 @@
                     <td>{{ compra.empresa_ubicacion }}</td>
                     <td>{{ compra.proveedor.name }}</td>
                     <td>{{ compra.puerto_entrega }}</td>
-                    <td>{{ compra.notas_compra }}</td>
                     <td>${{ compra.presupuesto_lote }}</td>
                     <td>{{ compra.get_estado_display }}</td>
+                    <td>{{ compra.notas_compra }}</td>
                     <td>
                         <ul>
                         {% for item in compra.items.all %}
