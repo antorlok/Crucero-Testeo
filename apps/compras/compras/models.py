@@ -5,19 +5,23 @@ from django.core.validators import MaxValueValidator
 
 # Create your models here.
 
-# Solicitud de compra que agrupa varios artículos
-class SolicitudCompra(models.Model):
+
+# Nueva estructura para solicitudes agrupadas por subtipo
+class SolicitudSubtipo(models.Model):
     id = models.AutoField(primary_key=True)
+    tipo = models.CharField(max_length=50)
+    subtipo = models.CharField(max_length=50)
     procesada = models.BooleanField(default=False)
 
-class SolicitudCompraItem(models.Model):
+class SolicitudSubtipoItem(models.Model):
     id = models.AutoField(primary_key=True)
-    solicitud = models.ForeignKey(SolicitudCompra, related_name='items', on_delete=models.CASCADE)
+    solicitud = models.ForeignKey(SolicitudSubtipo, related_name='items', on_delete=models.CASCADE)
+    producto_id = models.IntegerField()
     nombre = models.CharField(max_length=200)
-    cantidad = models.IntegerField(validators=[MaxValueValidator(10000)])
+    cantidad_a_comprar = models.IntegerField(validators=[MaxValueValidator(10000)])
     medida = models.CharField(max_length=20)
-    tipo = models.CharField(max_length=50, blank=True, null=True)
-    subtipo = models.CharField(max_length=50, blank=True, null=True)
+    tipo = models.CharField(max_length=50)
+    subtipo = models.CharField(max_length=50)
 
 class Solicitud(models.Model):
     name = models.CharField(max_length=2000)

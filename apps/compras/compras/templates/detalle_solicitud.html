@@ -10,28 +10,28 @@
     <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
     <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
     <p><strong>Procesada:</strong> {% if solicitud.procesada %}Sí{% else %}No{% endif %}</p>
-    <h3>Artículos</h3>
+    <p><strong>Tipo:</strong> {{ tipo }}</p>
+    <p><strong>Subtipo:</strong> {{ subtipo }}</p>
+    <h3>Productos a Comprar</h3>
     <table>
         <thead>
             <tr>
+                <th>ID Producto</th>
                 <th>Nombre</th>
-                <th>Cantidad</th>
+                <th>Cantidad a Comprar</th>
                 <th>Medida</th>
-                <th>Tipo</th>
-                <th>Subtipo</th>
             </tr>
         </thead>
         <tbody>
-        {% for item in solicitud.items.all %}
+        {% for item in items %}
             <tr>
+                <td>{{ item.producto_id }}</td>
                 <td>{{ item.nombre }}</td>
-                <td>{{ item.cantidad }}</td>
+                <td>{{ item.cantidad_a_comprar }}</td>
                 <td>{{ item.medida }}</td>
-                <td>{{ item.tipo }}</td>
-                <td>{{ item.subtipo }}</td>
             </tr>
         {% empty %}
-            <tr><td colspan="5">No hay artículos</td></tr>
+            <tr><td colspan="4">No hay productos</td></tr>
         {% endfor %}
         </tbody>
     </table>

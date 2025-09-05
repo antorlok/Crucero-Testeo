@@ -1,27 +1,9 @@
 from django.dispatch import Signal
 from django.dispatch import receiver
 
-# from apps.almacen.signals import productosSignal
+
+### REVISAR, no se usa
 # from apps.compras.otros_signals import aceptado_signal
-
-# Función receptora de la señal productosSignal
-
-def productos_bajos_receiver(sender, **kwargs):
-    productos = kwargs.get('productos')
-    if productos:
-        from apps.compras.compras.models import SolicitudCompra, SolicitudCompraItem
-        solicitud = SolicitudCompra.objects.create()
-        for producto in productos:
-            SolicitudCompraItem.objects.create(
-                solicitud=solicitud,
-                nombre=getattr(producto, 'nombre', ''),
-                cantidad=getattr(producto, 'cantidad', 0),
-                medida=getattr(producto, 'medida', ''),
-                tipo=getattr(producto, 'tipo', ''),
-                subtipo=getattr(producto, 'subtipo', '')
-            )
-# productosSignal.connect(productos_bajos_receiver)
-
 
 #  Función receptora de la señal aceptado_signal
 def aceptado_receiver(sender, **kwargs):
@@ -42,43 +24,12 @@ def enviar_monto_mensaje(monto, mensaje=None):
         mensaje = "Solicitud de Compra"
     monto_mensaje_signal.send(sender=None, monto=monto, mensaje=mensaje)
 
-
-
-# Ejemplo de uso:
-
-# signals.py (o el archivo donde quieras definir la signal)
-
-from django.dispatch import Signal
-
-# Definición de la signal
-productosSignal = Signal()
-
-# Sender de ejemplo
-def enviar_productos_bajos():
-    productos = [
-        type('Producto', (), {
-            'nombre': 'Arroz',
-            'cantidad': 10,
-            'medida': 'kg',
-            'tipo': 'Alimento',
-            'subtipo': 'No perecedero'
-        })(),
-        type('Producto', (), {
-            'nombre': 'Leche',
-            'cantidad': 5,
-            'medida': 'litros',
-            'tipo': 'Bebida',
-            'subtipo': 'Perecedero'
-        })(),
-    ]
-    productosSignal.send(sender=None, productos=productos)
-
-
-#  almacen
+###  ALMACEN
 
 # Importacion para poder tener los tipos y subtipos
 from apps.almacen.models import Producto
 from apps.almacen.signals import falta_stock_signal
+from .models import SolicitudSubtipo, SolicitudSubtipoItem
 
 @receiver(falta_stock_signal)
 def manejar_productos_signal(sender, productos, **kwargs):
@@ -108,8 +59,22 @@ def manejar_productos_signal(sender, productos, **kwargs):
 			query_set_del_subtipo = query_set_de_productos_por_tipo.filter(subtipo=subtipo_code)
 			if not query_set_del_subtipo.exists():
 				continue
-			# Acá tendrían la función para generar orden por subtipo
-			# generar_orden_compra(query_set_del_subtipo)
+			# Generar la solicitud para este subtipo
+			primer_producto = query_set_del_subtipo.first()
+			tipo = primer_producto.tipo
+			subtipo = primer_producto.subtipo
+			solicitud = SolicitudSubtipo.objects.create(tipo=tipo, subtipo=subtipo)
+			for producto in query_set_del_subtipo:
+				cantidad_a_comprar = getattr(producto, 'cantidad_ideal', 0) - getattr(producto, 'cantidad', 0)
+				SolicitudSubtipoItem.objects.create(
+                    solicitud=solicitud,
+                    producto_id=producto.id,
+                    nombre=producto.nombre,
+                    cantidad_a_comprar=cantidad_a_comprar,
+                    medida=producto.medida,
+                    tipo=tipo,
+                    subtipo=subtipo
+                )
 
     # Atributos que les puede interesar
     # producto.id
@@ -119,5 +84,3 @@ def manejar_productos_signal(sender, productos, **kwargs):
     # producto.cantidad (No es un atributo, se calcula según la cantidad que tiene cada lote registrado de ese producto)
     # producto.cantidad_ideal
     # producto.medida
-
-

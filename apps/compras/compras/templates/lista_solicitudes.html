@@ -13,14 +13,18 @@
         <thead>
             <tr>
                 <th>ID Solicitud</th>
+                <th>Tipo</th>
+                <th>Subtipo</th>
                 <th>Procesada</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for solicitud in solicitudes|dictsortreversed:'id' %}
+            {% for solicitud in solicitudes %}
             <tr>
                 <td>{{ solicitud.id }}</td>
+                <td>{{ solicitud.tipo }}</td>
+                <td>{{ solicitud.subtipo }}</td>
                 <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
                 <td>
                     <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
@@ -31,7 +35,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="3">No hay solicitudes registradas.</td></tr>
+            <tr><td colspan="5">No hay solicitudes registradas.</td></tr>
             {% endfor %}
         </tbody>
     </table>
