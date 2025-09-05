@@ -14,7 +14,7 @@ class CompraLote(models.Model):
     proveedor = models.ForeignKey('Proveedores', on_delete=models.PROTECT)
     puerto_entrega = models.CharField(max_length=100)
     notas_compra = models.TextField(blank=True)
-    presupuesto_lote = models.DecimalField(max_digits=12, decimal_places=2)
+    presupuesto_lote = models.DecimalField(max_digits=15, decimal_places=2)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='registrada')
     fecha = models.DateTimeField(auto_now_add=True)
     solicitud = models.ForeignKey('SolicitudSubtipo', null=True, blank=True, on_delete=models.SET_NULL, related_name='lotes')

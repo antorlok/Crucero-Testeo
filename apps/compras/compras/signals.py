@@ -35,6 +35,10 @@ def manejar_decision_solicitud(sender, id, aceptado, mensaje, **kwargs):
 			lote_signal.send(sender=None, compra_lote=compra_lote)
 		else:
 			compra_lote.estado = 'Cancelada'
+			solicitud = compra_lote.solicitud
+			if solicitud and solicitud.procesada:
+				solicitud.procesada = False
+				solicitud.save()
 		compra_lote.save()
 	except CompraLote.DoesNotExist:
 		print(f"No se encontró CompraLote con id={id}")
@@ -111,12 +115,15 @@ def manejar_decision_solicitud_almacen(sender, id, aceptado, mensaje, **kwargs):
 			compra_lote.estado = 'Exitosa'
 		else:
 			compra_lote.estado = 'Defectuosa'
-			# Buscar y actualizar la solicitud asociada
-			from .models import SolicitudSubtipo
-			solicitud = SolicitudSubtipo.objects.filter(tipo=compra_lote.proveedor.tipo, subtipo=compra_lote.proveedor.subtipo, procesada=True).order_by('-id').first()
-			if solicitud:
+			# Buscar y actualizar la solicitud asociada usando la relación directa
+			solicitud = compra_lote.solicitud
+			if solicitud and solicitud.procesada:
 				solicitud.procesada = False
 				solicitud.save()
+				# Nuevo signal para compras defectuosas
+				compra_defectosa = Signal()
+				# Enviar el nuevo signal compra_defectosa con monto y mensaje
+				compra_defectosa.send(sender=None, monto=compra_lote.presupuesto_lote, mensaje=mensaje)
 		compra_lote.save()
 	except CompraLote.DoesNotExist:
 		print(f"No se encontró CompraLote con id={id}")

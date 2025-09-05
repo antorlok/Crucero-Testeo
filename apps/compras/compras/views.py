@@ -77,6 +77,7 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
             notas_compra=request.POST.get('notas_compra', ''),
             presupuesto_lote=presupuesto_lote,
             estado='registrada',
+            solicitud=solicitud,
         )
         for item in materiales:
             cantidad = request.POST.get(f'cantidad_{item.id}')
