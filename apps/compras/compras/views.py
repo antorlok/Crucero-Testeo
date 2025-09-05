@@ -1,3 +1,24 @@
+from django.views.decorators.csrf import csrf_protect
+
+# Vista para procesar materiales de una solicitud específica
+@csrf_protect
+def procesar_materiales_solicitud_view(request, solicitud_id):
+    from .models import SolicitudSubtipo, SolicitudSubtipoItem
+    solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
+    materiales = solicitud.items.all()
+    if request.method == 'POST':
+        for item in materiales:
+            cantidad_comprada = request.POST.get(f'cantidad_{item.id}')
+            if cantidad_comprada is not None:
+                item.cantidad_comprada = cantidad_comprada
+                item.save()
+        solicitud.procesada = True
+        solicitud.save()
+        return redirect('lista_solicitudes')
+    return render(request, 'procesar_materiales_solicitud.html', {
+        'solicitud': solicitud,
+        'materiales': materiales,
+    })
 # Importar los nuevos modelos de solicitud
 from .models import SolicitudSubtipo, SolicitudSubtipoItem
 from django.http import HttpResponseRedirect

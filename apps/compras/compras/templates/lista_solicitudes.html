@@ -28,10 +28,7 @@
                 <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
                 <td>
                     <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
-                    <form method="post" action="{% url 'procesar_solicitud' solicitud.id %}" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea procesar esta solicitud?');">
-                        {% csrf_token %}
-                        <button type="submit" {% if solicitud.procesada %}disabled{% endif %}>Procesar</button>
-                    </form>
+                    <a href="{% url 'procesar_materiales_solicitud' solicitud.id %}"><button {% if solicitud.procesada %}disabled{% endif %}>Procesar</button></a>
                 </td>
             </tr>
             {% empty %}

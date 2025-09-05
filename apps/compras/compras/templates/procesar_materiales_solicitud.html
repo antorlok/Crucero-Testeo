@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Procesar materiales de la solicitud #{{ solicitud.id }}</title>
+</head>
+<body>
+    <h2>Procesar materiales de la solicitud #{{ solicitud.id }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <fieldset style="margin-bottom:20px;">
+            <legend><b>Datos de la Empresa</b></legend>
+            <label>Nombre de la empresa:</label>
+            <input type="text" name="empresa_nombre" required><br>
+            <label>Contacto:</label>
+            <input type="text" name="empresa_contacto" required><br>
+            <label>Ubicación:</label>
+            <input type="text" name="empresa_ubicacion" required><br>
+        </fieldset>
+        <fieldset style="margin-bottom:20px;">
+            <legend><b>Datos del Proveedor</b></legend>
+            <label>Nombre del proveedor:</label>
+            <input type="text" name="proveedor_nombre" value="{{ solicitud.proveedor.name|default:'' }}" readonly><br>
+            <label>Contacto del proveedor:</label>
+            <input type="text" name="proveedor_contacto" value="{{ solicitud.proveedor.contact|default:'' }}" readonly><br>
+            <label>Puerto de entrega:</label>
+            <select name="puerto_entrega" required>
+                <option value="">Seleccione un puerto</option>
+                <option value="Colón, Panamá">Colón, Panamá</option>
+                <option value="Cartagena, Colombia">Cartagena, Colombia</option>
+                <option value="Oranjestad, Aruba">Oranjestad, Aruba</option>
+                <option value="Kralendijk, Bonaire">Kralendijk, Bonaire</option>
+                <option value="Willemstad, Curazao">Willemstad, Curazao</option>
+            </select><br>
+        </fieldset>
+        <fieldset>
+            <legend><b>Materiales a procesar</b></legend>
+            <table border="1">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad a comprar</th>
+                    <th>Medida</th>
+                    <th>Cantidad comprada</th>
+                </tr>
+                {% for item in materiales %}
+                <tr>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.cantidad_a_comprar }}</td>
+                    <td>{{ item.medida }}</td>
+                    <td>
+                        <input type="number" name="cantidad_{{ item.id }}" value="{{ item.cantidad_comprada|default:item.cantidad_a_comprar }}" min="0">
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </fieldset>
+        <button type="submit">Procesar compra</button>
+        <a href="{% url 'lista_solicitudes' %}">Cancelar</a>
+    </form>
+</body>
+</html>
