@@ -15,7 +15,31 @@ def compras_lote_registradas_view(request):
                 compra = CompraLote.objects.get(id=compralote_id)
                 compra.estado = nuevo_estado
                 compra.save()
-                if nuevo_estado in ['exitosa', 'defectuosa']:
+                if nuevo_estado == 'cancelada':
+                    print('DEBUG: Entrando a cancelación de compra lote', compra.id)
+                    from .models import SolicitudSubtipo, SolicitudSubtipoItem
+                    nueva_solicitud = SolicitudSubtipo.objects.create(
+                        tipo=compra.proveedor.tipo,
+                        subtipo=compra.proveedor.subtipo,
+                        procesada=False
+                    )
+                    print('DEBUG: Solicitud creada', nueva_solicitud.id)
+                    for item in compra.items.all():
+                        SolicitudSubtipoItem.objects.create(
+                            solicitud=nueva_solicitud,
+                            producto_id=item.producto_id,
+                            nombre=item.nombre,
+                            cantidad_a_comprar=item.cantidad,
+                            medida=item.medida,
+                            tipo=compra.proveedor.tipo,
+                            subtipo=compra.proveedor.subtipo
+                        )
+                        print('DEBUG: Item añadido', item.nombre)
+                    compra.delete()
+                    print('DEBUG: Compra lote eliminada')
+                    from django.shortcuts import redirect
+                    return redirect('lista_solicitudes')
+                elif nuevo_estado in ['exitosa', 'defectuosa']:
                     from django.shortcuts import redirect
                     return redirect('historial_compras_lote')
             except CompraLote.DoesNotExist:
