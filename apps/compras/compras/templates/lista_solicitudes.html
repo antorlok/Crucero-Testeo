@@ -64,6 +64,7 @@
                                 <option value="espera_revision" {% if compra.estado == 'espera_revision' %}selected{% endif %}>En espera por revisión</option>
                                 <option value="exitosa" {% if compra.estado == 'exitosa' %}selected{% endif %}>Exitosa</option>
                                 <option value="defectuosa" {% if compra.estado == 'defectuosa' %}selected{% endif %}>Defectuosa</option>
+                                <option value="cancelada" {% if compra.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
                             </select>
                             <button type="submit">Guardar</button>
                         </form>

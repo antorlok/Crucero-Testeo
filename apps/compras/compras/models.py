@@ -6,6 +6,7 @@ class CompraLote(models.Model):
         ('espera_revision', 'En espera por revisión'),
         ('exitosa', 'Exitosa'),
         ('defectuosa', 'Defectuosa'),
+        ('cancelada', 'Cancelada'),
     ]
     empresa_nombre = models.CharField(max_length=100)
     empresa_contacto = models.CharField(max_length=100)
