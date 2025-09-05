@@ -42,13 +42,31 @@ class Paises(models.Model):
     nombre = models.CharField(max_length=100)
 
 class Proveedores(models.Model):
+    TIPO_CHOICES = [
+        ('COMIDA', 'Comida'),
+        ('BIENES', 'Bienes'),
+    ]
+    SUBTIPO_CHOICES = [
+        ('CADUCABLE', 'Caducable'),
+        ('NO_CADUCABLE', 'No caducable'),
+        ('REFRIGERADO', 'Refrigerado'),
+        ('NO_REFRIGERADO', 'No refrigerado'),
+        ('BEBIDA', 'Bebida'),
+        ('LICOR', 'Licor'),
+        ('REPUESTOS', 'Repuestos'),
+        ('LIMPIEZA', 'Materiales de limpieza'),
+        ('MEDICOS', 'Materiales médicos'),
+        ('ACTIVOS', 'Bienes activos'),
+    ]
     name = models.CharField(max_length=100)
     service_or_product = models.CharField(max_length=100)
     categorie = models.CharField(max_length=100)
     contact = models.CharField(max_length=100)
     countries = models.ManyToManyField(Paises)
     sucursal = models.CharField(max_length=100)
-    materiales = models.ManyToManyField(Material, through='ProveedorMaterial')
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='BIENES')
+    subtipo = models.CharField(max_length=20, choices=SUBTIPO_CHOICES, blank=True, null=True)
+    # Se elimina la relación de materiales, solo se registran tipo y subtipo
 
 
 
