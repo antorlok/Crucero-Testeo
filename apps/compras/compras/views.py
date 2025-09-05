@@ -1,8 +1,58 @@
+from django.shortcuts import get_object_or_404
+# Vista para ver detalles de una compra por lote
+def detalle_compra_lote_view(request, compra_id):
+    from .models import CompraLote
+    compra = get_object_or_404(CompraLote, id=compra_id)
+    return render(request, 'detalle_compra_lote.html', {'compra': compra})
 # Vista para listar compras por lote registradas
 def compras_lote_registradas_view(request):
     from .models import CompraLote
-    compras = CompraLote.objects.all().order_by('-fecha')
+    if request.method == 'POST':
+        compralote_id = request.POST.get('compralote_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if compralote_id and nuevo_estado:
+            try:
+                compra = CompraLote.objects.get(id=compralote_id)
+                compra.estado = nuevo_estado
+                compra.save()
+                if nuevo_estado == 'cancelada':
+                    print('DEBUG: Entrando a cancelación de compra lote', compra.id)
+                    from .models import SolicitudSubtipo, SolicitudSubtipoItem
+                    nueva_solicitud = SolicitudSubtipo.objects.create(
+                        tipo=compra.proveedor.tipo,
+                        subtipo=compra.proveedor.subtipo,
+                        procesada=False
+                    )
+                    print('DEBUG: Solicitud creada', nueva_solicitud.id)
+                    for item in compra.items.all():
+                        SolicitudSubtipoItem.objects.create(
+                            solicitud=nueva_solicitud,
+                            producto_id=item.producto_id,
+                            nombre=item.nombre,
+                            cantidad_a_comprar=item.cantidad,
+                            medida=item.medida,
+                            tipo=compra.proveedor.tipo,
+                            subtipo=compra.proveedor.subtipo
+                        )
+                        print('DEBUG: Item añadido', item.nombre)
+                    compra.delete()
+                    print('DEBUG: Compra lote eliminada')
+                    from django.shortcuts import redirect
+                    return redirect('lista_solicitudes')
+                elif nuevo_estado in ['exitosa', 'defectuosa']:
+                    from django.shortcuts import redirect
+                    return redirect('historial_compras_lote')
+            except CompraLote.DoesNotExist:
+                pass
+    # Excluir las exitosas del listado de registradas
+    compras = CompraLote.objects.exclude(estado='exitosa').order_by('-fecha')
     return render(request, 'compras_lote_registradas.html', {'compras': compras})
+
+# Vista para historial de compras por lote
+def historial_compras_lote_view(request):
+    from .models import CompraLote
+    compras = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    return render(request, 'historial_compras_lote.html', {'compras': compras})
 from django.views.decorators.csrf import csrf_protect
 
 # Vista para procesar materiales de una solicitud específica
@@ -210,7 +260,7 @@ def lista_solicitudes_view(request):
             except CompraLote.DoesNotExist:
                 pass
     solicitudes = SolicitudSubtipo.objects.filter(procesada=False).order_by('-id')
-    compras_lote = CompraLote.objects.all().order_by('-fecha')
+    compras_lote = CompraLote.objects.exclude(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
     return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
 
@@ -278,6 +328,7 @@ def eliminar_proveedor(request):
     return redirect('proveedores')
     return redirect('proveedores')
 def historial_compras_view(request):
-    from .models import Compra
+    from .models import Compra, CompraLote
     compras = Compra.objects.filter(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
-    return render(request, 'historial_compras.html', {'compras': compras})
+    compras_lote = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    return render(request, 'historial_compras.html', {'compras': compras, 'compras_lote': compras_lote})
