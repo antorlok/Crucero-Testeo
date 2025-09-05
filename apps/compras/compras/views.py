@@ -1,3 +1,9 @@
+from django.shortcuts import get_object_or_404
+# Vista para ver detalles de una compra por lote
+def detalle_compra_lote_view(request, compra_id):
+    from .models import CompraLote
+    compra = get_object_or_404(CompraLote, id=compra_id)
+    return render(request, 'detalle_compra_lote.html', {'compra': compra})
 # Vista para listar compras por lote registradas
 def compras_lote_registradas_view(request):
     from .models import CompraLote
