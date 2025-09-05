@@ -1,4 +1,29 @@
-# Modelo para compras registradas con campo de estado
+from django.db import models
+# Modelo para registrar compras por lote
+class CompraLote(models.Model):
+    ESTADO_CHOICES = [
+        ('registrada', 'Registrada'),
+        ('espera_revision', 'En espera por revisión'),
+        ('exitosa', 'Exitosa'),
+        ('defectuosa', 'Defectuosa'),
+    ]
+    empresa_nombre = models.CharField(max_length=100)
+    empresa_contacto = models.CharField(max_length=100)
+    empresa_ubicacion = models.CharField(max_length=100)
+    proveedor = models.ForeignKey('Proveedores', on_delete=models.PROTECT)
+    puerto_entrega = models.CharField(max_length=100)
+    notas_compra = models.TextField(blank=True)
+    presupuesto_lote = models.DecimalField(max_digits=12, decimal_places=2)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='registrada')
+    fecha = models.DateTimeField(auto_now_add=True)
+
+# Modelo para los artículos de la compra por lote
+class CompraLoteItem(models.Model):
+    compra_lote = models.ForeignKey(CompraLote, related_name='items', on_delete=models.CASCADE)
+    producto_id = models.IntegerField()
+    nombre = models.CharField(max_length=100)
+    medida = models.CharField(max_length=20)
+    cantidad = models.DecimalField(max_digits=10, decimal_places=2)
 
 from django.db import models
 from django.core.validators import MaxValueValidator

@@ -1,3 +1,48 @@
+# Vista para listar compras por lote registradas
+def compras_lote_registradas_view(request):
+    from .models import CompraLote
+    compras = CompraLote.objects.all().order_by('-fecha')
+    return render(request, 'compras_lote_registradas.html', {'compras': compras})
+from django.views.decorators.csrf import csrf_protect
+
+# Vista para procesar materiales de una solicitud específica
+@csrf_protect
+def procesar_materiales_solicitud_view(request, solicitud_id):
+    from .models import SolicitudSubtipo, SolicitudSubtipoItem, Proveedores, CompraLote, CompraLoteItem
+    solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
+    materiales = solicitud.items.all()
+    proveedores = Proveedores.objects.filter(tipo=solicitud.tipo, subtipo=solicitud.subtipo)
+    if request.method == 'POST':
+        # Guardar la compra por lote
+        proveedor_id = request.POST.get('proveedor_id')
+        proveedor = Proveedores.objects.get(id=proveedor_id) if proveedor_id else None
+        compra_lote = CompraLote.objects.create(
+            empresa_nombre=request.POST.get('empresa_nombre', ''),
+            empresa_contacto=request.POST.get('empresa_contacto', ''),
+            empresa_ubicacion=request.POST.get('empresa_ubicacion', ''),
+            proveedor=proveedor,
+            puerto_entrega=request.POST.get('puerto_entrega', ''),
+            notas_compra=request.POST.get('notas_compra', ''),
+            presupuesto_lote=request.POST.get('presupuesto_lote') or 0,
+            estado='registrada',
+        )
+        for item in materiales:
+            cantidad = request.POST.get(f'cantidad_{item.id}')
+            CompraLoteItem.objects.create(
+                compra_lote=compra_lote,
+                producto_id=item.producto_id,
+                nombre=item.nombre,
+                medida=item.medida,
+                cantidad=cantidad or 0
+            )
+        solicitud.procesada = True
+        solicitud.save()
+        return redirect('compras_lote_registradas')
+    return render(request, 'procesar_materiales_solicitud.html', {
+        'solicitud': solicitud,
+        'materiales': materiales,
+        'proveedores': proveedores,
+    })
 # Importar los nuevos modelos de solicitud
 from .models import SolicitudSubtipo, SolicitudSubtipoItem
 from django.http import HttpResponseRedirect
@@ -148,8 +193,10 @@ def registrar_solicitud_compra_view(request):
 
 # View para listar solicitudes agrupadas por subtipo
 def lista_solicitudes_view(request):
+    from .models import CompraLote
     solicitudes = SolicitudSubtipo.objects.order_by('-id')
-    return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes})
+    compras_lote = CompraLote.objects.all().order_by('-fecha')
+    return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
 
 @csrf_protect
