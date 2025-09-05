@@ -1,28 +1,32 @@
 from django.dispatch import Signal
 from django.dispatch import receiver
 
+### ADMINISTRACION
 
-### REVISAR, no se usa
-# from apps.compras.otros_signals import aceptado_signal
+##  Senders
 
-#  Función receptora de la señal aceptado_signal
-def aceptado_receiver(sender, **kwargs):
-    aceptado = kwargs.get('aceptado')
-    mensaje = kwargs.get('mensaje')
-    print(f"Receiver: aceptado={aceptado}, mensaje={mensaje}")
-# aceptado_signal.connect(aceptado_receiver)
+# Signal para administración de solicitud de compra
+solicitud_compra_administracion_signal = Signal()
 
-#  Senders
+def solicitud_compra_administracion(id, monto, mensaje=None):
+	"""
+	Envía un signal con un id, monto y mensaje usando Django signals.
+	"""
+	if mensaje is None:
+		mensaje = "Solicitud de Compra"
+	solicitud_compra_administracion_signal.send(sender=None, id=id, monto=monto, mensaje=mensaje)
 
-monto_mensaje_signal = Signal()
+# Ejemplo de uso del sender:
+# solicitud_compra_administracion(id=123, monto=5000, mensaje="Nueva solicitud de compra")
 
-def enviar_monto_mensaje(monto, mensaje=None):
-    """
-    Envía un signal con un monto y un mensaje usando Django signals.
-    """
-    if mensaje is None:
-        mensaje = "Solicitud de Compra"
-    monto_mensaje_signal.send(sender=None, monto=monto, mensaje=mensaje)
+##  Receivers
+
+# from compras.signals import decision_solicitud_signal
+
+# @receiver(decision_solicitud_signal)
+def manejar_decision_solicitud(sender, id, aceptado, mensaje, **kwargs):
+    print(f"ID: {id} | Aceptado: {aceptado} | Mensaje: {mensaje}")
+    # Aquí va la lógica que necesites
 
 ###  ALMACEN
 
@@ -84,3 +88,6 @@ def manejar_productos_signal(sender, productos, **kwargs):
     # producto.cantidad (No es un atributo, se calcula según la cantidad que tiene cada lote registrado de ese producto)
     # producto.cantidad_ideal
     # producto.medida
+	
+
+### Envio a almacen
