@@ -8,36 +8,6 @@
     <link rel="stylesheet" href="{% static 'styles/lista_solicitudes.css' %}">
 </head>
 <body>
-<<<<<<< HEAD
-    <a href="{% url 'dashboard' %}"><button class="volver-btn">Volver</button></a>
-    <h2>Lista de Solicitudes de Compra</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID Solicitud</th>
-                <th>Procesada</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for solicitud in solicitudes|dictsortreversed:'id' %}
-            <tr>
-                <td>{{ solicitud.id }}</td>
-                <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
-                <td>
-                    <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
-                    <form method="post" action="{% url 'procesar_solicitud' solicitud.id %}" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea procesar esta solicitud?');">
-                        {% csrf_token %}
-                        <button type="submit" {% if solicitud.procesada %}disabled{% endif %}>Procesar</button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="3">No hay solicitudes registradas.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-=======
     <a href="{% url 'dashboard' %}"><button>Volver</button></a>
     <div style="display: flex; flex-direction: row; align-items: flex-start;">
         <div style="flex: 1;">
@@ -106,6 +76,5 @@
             </table>
         </div>
     </div>
->>>>>>> main
 </body>
 </html>
