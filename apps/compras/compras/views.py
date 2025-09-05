@@ -145,36 +145,49 @@ def dashboard_view(request):
 def proveedores_view(request):
     import json
     from .models import ProveedorMaterial, Material, Paises
+    SUBTIPOS_POR_TIPO = {
+        'COMIDA': [
+            ('CADUCABLE', 'Caducable'),
+            ('NO_CADUCABLE', 'No caducable'),
+            ('REFRIGERADO', 'Refrigerado'),
+            ('NO_REFRIGERADO', 'No refrigerado'),
+            ('BEBIDA', 'Bebida'),
+            ('LICOR', 'Licor'),
+        ],
+        'BIENES': [
+            ('REPUESTOS', 'Repuestos'),
+            ('LIMPIEZA', 'Materiales de limpieza'),
+            ('MEDICOS', 'Materiales médicos'),
+            ('ACTIVOS', 'Bienes activos'),
+        ]
+    }
+    tipo_seleccionado = None
     if request.method == 'POST':
+        tipo_seleccionado = request.POST.get('tipo', None)
         form = ProveedorForm(request.POST)
-        materiales_json = request.POST.get('materiales_json', '[]')
-        materiales_data = json.loads(materiales_json)  # lista de {nombre, costo}
         paises_json = request.POST.get('paises_json', '[]')
-        paises_nombres = json.loads(paises_json)
-        if form.is_valid():
-            proveedor = form.save(commit=False)
-            proveedor.save()
-            # Limpiar relaciones previas si es edición (opcional)
-            proveedor.materiales.clear()
-            # Guardar materiales y costos
-            for mat in materiales_data:
-                nombre = mat.get('nombre')
-                costo = mat.get('costo')
-                if nombre and costo is not None:
-                    material_obj, _ = Material.objects.get_or_create(nombre=nombre)
-                    ProveedorMaterial.objects.create(
-                        proveedor=proveedor,
-                        material=material_obj,
-                        costo_unidad=costo
-                    )
-            # Guardar países
-            paises_objs = [Paises.objects.get_or_create(nombre=nombre)[0] for nombre in paises_nombres]
-            proveedor.countries.set(paises_objs)
-            return redirect('proveedores')
+        if paises_json.strip() == '':
+            paises_nombres = []
+        else:
+            paises_nombres = json.loads(paises_json)
+        # Solo guardar si el submit fue por el botón Registrar
+        if request.POST.get('action') == 'Registrar':
+            if form.is_valid():
+                proveedor = form.save(commit=False)
+                proveedor.save()
+                # Guardar países
+                paises_objs = [Paises.objects.get_or_create(nombre=nombre)[0] for nombre in paises_nombres]
+                proveedor.countries.set(paises_objs)
+                return redirect('proveedores')
     else:
         form = ProveedorForm()
     proveedores = Proveedores.objects.all()
-    return render(request, 'proveedores.html', {'form': form, 'proveedores': proveedores})
+    return render(request, 'proveedores.html', {
+        'form': form,
+        'proveedores': proveedores,
+        'SUBTIPOS_POR_TIPO': SUBTIPOS_POR_TIPO,
+        'tipo_seleccionado': tipo_seleccionado,
+    })
 
 @csrf_protect
 def eliminar_proveedor(request):
@@ -183,10 +196,9 @@ def eliminar_proveedor(request):
         if not proveedor_id:
             return redirect('proveedores')
         proveedor = get_object_or_404(Proveedores, id=proveedor_id)
-        proveedor.countries.clear()
-        proveedor.materiales.clear()
-        proveedor.delete()
-        return redirect('proveedores')
+    proveedor.countries.clear()
+    proveedor.delete()
+    return redirect('proveedores')
     return redirect('proveedores')
 def historial_compras_view(request):
     from .models import Compra
