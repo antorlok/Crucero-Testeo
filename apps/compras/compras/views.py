@@ -261,7 +261,8 @@ def lista_solicitudes_view(request):
             except CompraLote.DoesNotExist:
                 pass
     solicitudes = SolicitudSubtipo.objects.filter(procesada=False).order_by('-id')
-    compras_lote = CompraLote.objects.exclude(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    #### Revisar estados
+    compras_lote = CompraLote.objects.exclude(estado__in=['exitosa', 'defectuosa', 'cancelada']).order_by('-fecha')
     return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
 
@@ -327,9 +328,8 @@ def eliminar_proveedor(request):
     proveedor.countries.clear()
     proveedor.delete()
     return redirect('proveedores')
-    return redirect('proveedores')
 def historial_compras_view(request):
     from .models import Compra, CompraLote
     compras = Compra.objects.filter(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
-    compras_lote = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    compras_lote = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa', 'cancelada']).order_by('-fecha')
     return render(request, 'historial_compras.html', {'compras': compras, 'compras_lote': compras_lote})

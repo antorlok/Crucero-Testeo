@@ -41,7 +41,6 @@
         </div>
         <div style="flex: 2; margin-left: 40px;">
             <h2>Compras por Lote Registradas</h2>
-            <a href="{% url 'historial_compras_lote' %}"><button>Ver Historial de Compras por Lote</button></a>
             <table border="1" style="width:100%;">
                 <tr>
                     <th>Fecha</th>
@@ -56,18 +55,7 @@
                     <td>{{ compra.proveedor.name }}</td>
                     <td>${{ compra.presupuesto_lote }}</td>
                     <td>
-                        <form method="post" action="">
-                            {% csrf_token %}
-                            <input type="hidden" name="compralote_id" value="{{ compra.id }}">
-                            <select name="nuevo_estado">
-                                <option value="registrada" {% if compra.estado == 'registrada' %}selected{% endif %}>Registrada</option>
-                                <option value="espera_revision" {% if compra.estado == 'espera_revision' %}selected{% endif %}>En espera por revisión</option>
-                                <option value="exitosa" {% if compra.estado == 'exitosa' %}selected{% endif %}>Exitosa</option>
-                                <option value="defectuosa" {% if compra.estado == 'defectuosa' %}selected{% endif %}>Defectuosa</option>
-                                <option value="cancelada" {% if compra.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
-                            </select>
-                            <button type="submit">Guardar</button>
-                        </form>
+                        {{ compra.get_estado_display }}
                     </td>
                     <td>
                         <a href="{% url 'detalle_compra_lote' compra.id %}"><button>Ver detalles</button></a>
