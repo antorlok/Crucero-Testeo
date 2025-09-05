@@ -50,6 +50,7 @@
                     <th>Presupuesto</th>
                     <th>Notas</th>
                     <th>Estado</th>
+                    <th>Acción</th>
                     <th>Artículos</th>
                 </tr>
                 {% for compra in compras_lote %}
@@ -60,7 +61,19 @@
                     <td>{{ compra.puerto_entrega }}</td>
                     <td>${{ compra.presupuesto_lote }}</td>
                     <td>{{ compra.notas_compra }}</td>
-                    <td>{{ compra.get_estado_display }}</td>
+                    <td>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="compralote_id" value="{{ compra.id }}">
+                            <select name="nuevo_estado">
+                                <option value="registrada" {% if compra.estado == 'registrada' %}selected{% endif %}>Registrada</option>
+                                <option value="espera_revision" {% if compra.estado == 'espera_revision' %}selected{% endif %}>En espera por revisión</option>
+                                <option value="exitosa" {% if compra.estado == 'exitosa' %}selected{% endif %}>Exitosa</option>
+                                <option value="defectuosa" {% if compra.estado == 'defectuosa' %}selected{% endif %}>Defectuosa</option>
+                            </select>
+                            <button type="submit">Guardar</button>
+                        </form>
+                    </td>
                     <td>
                         <ul>
                         {% for item in compra.items.all %}
