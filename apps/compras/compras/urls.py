@@ -1,6 +1,7 @@
 
+
 from django.urls import path
-from .views import dashboard_view, proveedores_view, eliminar_proveedor, registrar_compra_view, compras_registradas_view, registrar_solicitud_compra_view, lista_solicitudes_view, detalle_solicitud_view, procesar_solicitud_view, historial_compras_view
+from .views import dashboard_view, proveedores_view, eliminar_proveedor, registrar_compra_view, compras_registradas_view, registrar_solicitud_compra_view, lista_solicitudes_view, detalle_solicitud_view, procesar_solicitud_view, historial_compras_view, procesar_materiales_solicitud_view, compras_lote_registradas_view
 
 urlpatterns = [
     path('', dashboard_view, name='dashboard'),
@@ -13,4 +14,6 @@ urlpatterns = [
     path('solicitudes/<int:solicitud_id>/', detalle_solicitud_view, name='detalle_solicitud'),
     path('solicitudes/<int:solicitud_id>/procesar/', procesar_solicitud_view, name='procesar_solicitud'),
     path('compras/historial/', historial_compras_view, name='historial_compras'),
+    path('solicitudes/<int:solicitud_id>/procesar-materiales/', procesar_materiales_solicitud_view, name='procesar_materiales_solicitud'),
+    path('compras/lotes/', compras_lote_registradas_view, name='compras_lote_registradas'),
 ]
