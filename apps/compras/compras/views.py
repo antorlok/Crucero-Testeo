@@ -7,8 +7,28 @@ def detalle_compra_lote_view(request, compra_id):
 # Vista para listar compras por lote registradas
 def compras_lote_registradas_view(request):
     from .models import CompraLote
-    compras = CompraLote.objects.all().order_by('-fecha')
+    if request.method == 'POST':
+        compralote_id = request.POST.get('compralote_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if compralote_id and nuevo_estado:
+            try:
+                compra = CompraLote.objects.get(id=compralote_id)
+                compra.estado = nuevo_estado
+                compra.save()
+                if nuevo_estado in ['exitosa', 'defectuosa']:
+                    from django.shortcuts import redirect
+                    return redirect('historial_compras_lote')
+            except CompraLote.DoesNotExist:
+                pass
+    # Excluir las exitosas del listado de registradas
+    compras = CompraLote.objects.exclude(estado='exitosa').order_by('-fecha')
     return render(request, 'compras_lote_registradas.html', {'compras': compras})
+
+# Vista para historial de compras por lote
+def historial_compras_lote_view(request):
+    from .models import CompraLote
+    compras = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    return render(request, 'historial_compras_lote.html', {'compras': compras})
 from django.views.decorators.csrf import csrf_protect
 
 # Vista para procesar materiales de una solicitud específica
@@ -212,7 +232,7 @@ def lista_solicitudes_view(request):
             except CompraLote.DoesNotExist:
                 pass
     solicitudes = SolicitudSubtipo.objects.filter(procesada=False).order_by('-id')
-    compras_lote = CompraLote.objects.all().order_by('-fecha')
+    compras_lote = CompraLote.objects.exclude(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
     return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
 
@@ -280,6 +300,7 @@ def eliminar_proveedor(request):
     return redirect('proveedores')
     return redirect('proveedores')
 def historial_compras_view(request):
-    from .models import Compra
+    from .models import Compra, CompraLote
     compras = Compra.objects.filter(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
-    return render(request, 'historial_compras.html', {'compras': compras})
+    compras_lote = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa']).order_by('-fecha')
+    return render(request, 'historial_compras.html', {'compras': compras, 'compras_lote': compras_lote})
