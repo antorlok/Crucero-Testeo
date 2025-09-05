@@ -19,13 +19,7 @@
                 <label for="id_service_or_product">Servicio o producto:</label>
                 {{ form.service_or_product }}
             </div>
-            <div class="form-row">
-                <label for="pais-input">País:</label>
-                <input type="text" id="pais-input" placeholder="Nombre del país">
-                <button type="button" onclick="addPais()">Añadir</button>
-            </div>
-            <ul id="pais-list"></ul>
-            <input type="hidden" name="paises_json" id="paises-json">
+
             <div class="form-row">
                 <label for="id_categorie">Categoría:</label>
                 {{ form.categorie }}
@@ -102,6 +96,13 @@
                     {# Las opciones se llenarán dinámicamente con JS #}
                 </select>
             </div>
+            <div class="form-row">
+                <label for="pais-input">País:</label>
+                <input type="text" id="pais-input" placeholder="Nombre del país">
+                <button type="button" onclick="addPais()">Añadir</button>
+            </div>
+            <ul id="pais-list"></ul>
+            <input type="hidden" name="paises_json" id="paises-json">
             <button type="submit" name="action" value="Registrar">Registrar</button>
         </form>
         <div style="display: flex; justify-content: flex-end; margin-bottom: 0;">
