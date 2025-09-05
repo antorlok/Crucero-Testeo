@@ -37,7 +37,7 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
             )
         solicitud.procesada = True
         solicitud.save()
-        return redirect('compras_lote_registradas')
+        return redirect('lista_solicitudes')
     return render(request, 'procesar_materiales_solicitud.html', {
         'solicitud': solicitud,
         'materiales': materiales,
@@ -194,7 +194,18 @@ def registrar_solicitud_compra_view(request):
 # View para listar solicitudes agrupadas por subtipo
 def lista_solicitudes_view(request):
     from .models import CompraLote
-    solicitudes = SolicitudSubtipo.objects.order_by('-id')
+    if request.method == 'POST':
+        compralote_id = request.POST.get('compralote_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if compralote_id and nuevo_estado:
+            try:
+                from .models import CompraLote
+                compra = CompraLote.objects.get(id=compralote_id)
+                compra.estado = nuevo_estado
+                compra.save()
+            except CompraLote.DoesNotExist:
+                pass
+    solicitudes = SolicitudSubtipo.objects.filter(procesada=False).order_by('-id')
     compras_lote = CompraLote.objects.all().order_by('-fecha')
     return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
