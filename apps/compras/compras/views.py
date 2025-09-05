@@ -59,7 +59,7 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def procesar_materiales_solicitud_view(request, solicitud_id):
     from .models import SolicitudSubtipo, SolicitudSubtipoItem, Proveedores, CompraLote, CompraLoteItem
-    from .signals import solicitud_compra_administracion
+    # from .signals import solicitud_compra_administracion
     solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
     materiales = solicitud.items.all()
     proveedores = Proveedores.objects.filter(tipo=solicitud.tipo, subtipo=solicitud.subtipo)
@@ -89,7 +89,7 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
                 cantidad=cantidad or 0
             )
         # Enviar signal a administración
-        solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
+        # solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
         solicitud.procesada = True
         solicitud.save()
         return redirect('lista_solicitudes')

@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Detalle de Compra por Lote</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/detalle_compra_lote.css' %}">
 </head>
 <body>
     <h2>Detalle de Compra por Lote</h2>
-    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
+    <a href="{% url 'lista_solicitudes' %}"><button type="button" class="btn-volver">Volver</button></a>
     <fieldset style="margin-bottom:20px;">
         <legend><b>Datos de la Empresa</b></legend>
         <label>Nombre de la empresa:</label>
