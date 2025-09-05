@@ -48,9 +48,15 @@
                 </select>
             </div>
             <div class="form-row">
-                <label for="pais-input">País:</label>
-                <input type="text" id="pais-input" placeholder="Nombre del país">
-                <button type="button" onclick="addPais()">Añadir</button>
+                <label for="pais-select">País(es):</label>
+                <select id="pais-select" multiple size="5">
+                    <option value="Panamá">Panamá</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Aruba">Aruba</option>
+                    <option value="Bonaire">Bonaire</option>
+                    <option value="Curazao">Curazao</option>
+                </select>
+                <button type="button" onclick="addPaisesSeleccionados()">Añadir</button>
             </div>
             <ul id="pais-list"></ul>
             <input type="hidden" name="paises_json" id="paises-json">
@@ -60,6 +66,38 @@
             <button type="button" onclick="window.location.href='{% url 'dashboard' %}'" class="btn-devolver">Devolver</button>
         </div>
     </div>
+    <script>
+    // Manejo de selección múltiple de países
+    let paisesSeleccionados = [];
+    function addPaisesSeleccionados() {
+        const select = document.getElementById('pais-select');
+        for (let option of select.options) {
+            if (option.selected && !paisesSeleccionados.includes(option.value)) {
+                paisesSeleccionados.push(option.value);
+            }
+        }
+        renderPaisList();
+        document.getElementById('paises-json').value = JSON.stringify(paisesSeleccionados);
+    }
+    function renderPaisList() {
+        const ul = document.getElementById('pais-list');
+        ul.innerHTML = '';
+        paisesSeleccionados.forEach(function(pais, idx) {
+            const li = document.createElement('li');
+            li.textContent = pais + ' ';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = 'Quitar';
+            btn.onclick = function() {
+                paisesSeleccionados.splice(idx, 1);
+                renderPaisList();
+                document.getElementById('paises-json').value = JSON.stringify(paisesSeleccionados);
+            };
+            li.appendChild(btn);
+            ul.appendChild(li);
+        });
+    }
+    </script>
     <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/proveedor_tipo_subtipo.js' %}"></script>
     <h2>Proveedores Registrados</h2>
@@ -102,7 +140,7 @@
                     <form method="post" action="{% url 'eliminar_proveedor' %}" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="proveedor_id" value="{{ proveedor.id }}">
-                        <button type="submit">Eliminar</button>
+                        <button type="submit" {% if proveedor.id in proveedores_bloqueados %}disabled style="opacity:0.5;cursor:not-allowed;" title="No se puede eliminar: asignado a una orden de compra"{% endif %}>Eliminar</button>
                     </form>
                 </td>
             </tr>

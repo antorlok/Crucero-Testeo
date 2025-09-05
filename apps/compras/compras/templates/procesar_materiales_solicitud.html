@@ -22,23 +22,28 @@
         <fieldset style="margin-bottom:20px;">
             <legend><b>Datos del Proveedor</b></legend>
             <label>Proveedor:</label>
-            <select name="proveedor_id" required>
+            <select name="proveedor_id" id="proveedor_id_select" required onchange="actualizarPuertosPorProveedor()">
                 <option value="">Seleccione un proveedor</option>
                 {% for proveedor in proveedores %}
-                    <option value="{{ proveedor.id }}">{{ proveedor.name }} ({{ proveedor.contact }})</option>
+                    <option value="{{ proveedor.id }}" {% if proveedor_id == proveedor.id|stringformat:'s' %}selected{% endif %}>{{ proveedor.name }} ({{ proveedor.contact }})</option>
                 {% empty %}
                     <option value="">No hay proveedores registrados para este tipo y subtipo</option>
                 {% endfor %}
             </select><br>
             <label>Puerto de entrega:</label>
-            <select name="puerto_entrega" required>
+            <select name="puerto_entrega" id="puerto_entrega_select" required>
                 <option value="">Seleccione un puerto</option>
-                <option value="Colón, Panamá">Colón, Panamá</option>
-                <option value="Cartagena, Colombia">Cartagena, Colombia</option>
-                <option value="Oranjestad, Aruba">Oranjestad, Aruba</option>
-                <option value="Kralendijk, Bonaire">Kralendijk, Bonaire</option>
-                <option value="Willemstad, Curazao">Willemstad, Curazao</option>
+                {% for puerto in puertos_disponibles %}
+                    <option value="{{ puerto }}">{{ puerto }}</option>
+                {% endfor %}
             </select><br>
+            <script>
+            function actualizarPuertosPorProveedor() {
+                var proveedorId = document.getElementById('proveedor_id_select').value;
+                var url = window.location.pathname + '?proveedor_id=' + proveedorId;
+                window.location.href = url;
+            }
+            </script>
         </fieldset>
         <fieldset>
             <legend><b>Materiales a procesar</b></legend>

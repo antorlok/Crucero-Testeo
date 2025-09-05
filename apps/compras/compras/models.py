@@ -73,6 +73,10 @@ class Paises(models.Model):
     nombre = models.CharField(max_length=100)
 
 class Proveedores(models.Model):
+    # Diccionario de países, editable por el usuario
+    paises= [
+        
+    ]
     TIPO_CHOICES = [
         ('COMIDA', 'Comida'),
         ('BIENES', 'Bienes'),

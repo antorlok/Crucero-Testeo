@@ -13,10 +13,10 @@
     <div class="container">
 
         <h1>Historial de Compras por Lote</h1>
-        <table>
+        <table border="1">
             <thead>
                 <tr>
-                    <th>Fecha</th>
+                    <!-- <th>Fecha</th> -->
                     <th>Empresa</th>
                     <th>Contacto</th>
                     <th>Ubicación</th>
@@ -30,7 +30,7 @@
             <tbody>
                 {% for compra in compras_lote %}
                 <tr class="{% if compra.get_estado_display|lower == 'exitosa' %}estado-exitosa{% elif compra.get_estado_display|lower == 'defectuosa' %}estado-defectuosa{% elif compra.get_estado_display|lower == 'cancelada' %}estado-cancelada{% endif %}">
-                    <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
+                    <!-- <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td> -->
                     <td>{{ compra.empresa_nombre }}</td>
                     <td>{{ compra.empresa_contacto }}</td>
                     <td>{{ compra.empresa_ubicacion }}</td>

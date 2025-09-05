@@ -60,24 +60,43 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def procesar_materiales_solicitud_view(request, solicitud_id):
     from .models import SolicitudSubtipo, SolicitudSubtipoItem, Proveedores, CompraLote, CompraLoteItem
-
-# importacion de almacen, descomentar
-    # from .signals import solicitud_compra_administracion
-
-
     solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
     materiales = solicitud.items.all()
     proveedores = Proveedores.objects.filter(tipo=solicitud.tipo, subtipo=solicitud.subtipo)
-    if request.method == 'POST':
-        # Guardar la compra por lote
-        proveedor_id = request.POST.get('proveedor_id')
-        proveedor = Proveedores.objects.get(id=proveedor_id) if proveedor_id else None
+
+    # Puertos y países asociados
+    PUERTOS_POR_PAIS = {
+        'Panamá': ['Colón, Panamá'],
+        'Colombia': ['Cartagena, Colombia'],
+        'Aruba': ['Oranjestad, Aruba'],
+        'Bonaire': ['Kralendijk, Bonaire'],
+        'Curazao': ['Willemstad, Curazao'],
+    }
+
+    puertos_disponibles = []
+    proveedor_paises = []
+    proveedor_id = request.POST.get('proveedor_id') or request.GET.get('proveedor_id')
+    proveedor_seleccionado = None
+    if proveedor_id:
+        try:
+            proveedor_seleccionado = Proveedores.objects.get(id=proveedor_id)
+            proveedor_paises = [p.nombre for p in proveedor_seleccionado.countries.all()]
+            for pais in proveedor_paises:
+                puertos_disponibles.extend(PUERTOS_POR_PAIS.get(pais, []))
+        except Proveedores.DoesNotExist:
+            pass
+    if not puertos_disponibles:
+        # Si no hay proveedor seleccionado, mostrar todos los puertos
+        for lista in PUERTOS_POR_PAIS.values():
+            puertos_disponibles.extend(lista)
+
+    if request.method == 'POST' and proveedor_seleccionado:
         presupuesto_lote = request.POST.get('presupuesto_lote') or 0
         compra_lote = CompraLote.objects.create(
             empresa_nombre=request.POST.get('empresa_nombre', ''),
             empresa_contacto=request.POST.get('empresa_contacto', ''),
             empresa_ubicacion=request.POST.get('empresa_ubicacion', ''),
-            proveedor=proveedor,
+            proveedor=proveedor_seleccionado,
             puerto_entrega=request.POST.get('puerto_entrega', ''),
             notas_compra=request.POST.get('notas_compra', ''),
             presupuesto_lote=presupuesto_lote,
@@ -93,21 +112,12 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
                 medida=item.medida,
                 cantidad=cantidad or 0
             )
-
-
         # Enviar signal a administración, descomentar
         # solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
-
-        ##bloque fake, quitar
         from django.dispatch import Signal
         compra_lote.estado = 'En espera por revisión'
-		# Enviar signal con el lote completo
         lote_signal = Signal()
         lote_signal.send(sender=None, compra_lote=compra_lote)
-
-
-        ####
-
         solicitud.procesada = True
         solicitud.save()
         return redirect('lista_solicitudes')
@@ -115,6 +125,8 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
         'solicitud': solicitud,
         'materiales': materiales,
         'proveedores': proveedores,
+        'puertos_disponibles': puertos_disponibles,
+        'proveedor_id': proveedor_id,
     })
 # Importar los nuevos modelos de solicitud
 from .models import SolicitudSubtipo, SolicitudSubtipoItem
@@ -291,7 +303,7 @@ def dashboard_view(request):
 @csrf_protect
 def proveedores_view(request):
     import json
-    from .models import ProveedorMaterial, Material, Paises
+    from .models import ProveedorMaterial, Material, Paises, CompraLote
     SUBTIPOS_POR_TIPO = {
         'COMIDA': [
             ('CADUCABLE', 'Caducable'),
@@ -329,11 +341,14 @@ def proveedores_view(request):
     else:
         form = ProveedorForm()
     proveedores = Proveedores.objects.all()
+    # IDs de proveedores bloqueados (asignados a cualquier CompraLote)
+    proveedores_bloqueados = set(CompraLote.objects.values_list('proveedor_id', flat=True))
     return render(request, 'proveedores.html', {
         'form': form,
         'proveedores': proveedores,
         'SUBTIPOS_POR_TIPO': SUBTIPOS_POR_TIPO,
         'tipo_seleccionado': tipo_seleccionado,
+        'proveedores_bloqueados': proveedores_bloqueados,
     })
 
 @csrf_protect
