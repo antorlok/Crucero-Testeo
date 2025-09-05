@@ -26,55 +26,7 @@
             </div>
             <div class="form-row">
                 <label for="id_contact">Contacto:</label>
-                    {{ form.contact }}
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var contactInput = document.getElementById('id_contact');
-                            var form = document.getElementById('proveedor-form');
-                            if (contactInput) {
-                                // Solo permitir dígitos
-                                contactInput.addEventListener('input', function(e) {
-                                    this.value = this.value.replace(/\D/g, '');
-                                });
-                            }
-                            form.addEventListener('submit', function(e) {
-                                // Validar contacto
-                                if (contactInput) {
-                                    var val = contactInput.value;
-                                    if (val.length < 6 || val.length > 15) {
-                                        e.preventDefault();
-                                        alert('El contacto debe tener entre 6 y 15 dígitos.');
-                                        contactInput.focus();
-                                        return;
-                                    }
-                                }
-                                // Validar país
-                                var paisList = document.getElementById('pais-list');
-                                if (!paisList || paisList.children.length === 0) {
-                                    e.preventDefault();
-                                    alert('Debe ingresar al menos un país.');
-                                    document.getElementById('pais-input').focus();
-                                    return;
-                                }
-                                // Validar tipo
-                                var tipoSelect = document.getElementById('id_tipo');
-                                if (!tipoSelect || !tipoSelect.value) {
-                                    e.preventDefault();
-                                    alert('Debe seleccionar un tipo de producto.');
-                                    tipoSelect.focus();
-                                    return;
-                                }
-                                // Validar subtipo
-                                var subtipoSelect = document.getElementById('id_subtipo');
-                                if (!subtipoSelect || !subtipoSelect.value) {
-                                    e.preventDefault();
-                                    alert('Debe seleccionar un subtipo de producto.');
-                                    subtipoSelect.focus();
-                                    return;
-                                }
-                            });
-                        });
-                    </script>
+                {{ form.contact }}
             </div>
             <div class="form-row">
                 <label for="id_sucursal">Sucursal:</label>
