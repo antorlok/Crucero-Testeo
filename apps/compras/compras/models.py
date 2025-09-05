@@ -17,6 +17,7 @@ class CompraLote(models.Model):
     presupuesto_lote = models.DecimalField(max_digits=12, decimal_places=2)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='registrada')
     fecha = models.DateTimeField(auto_now_add=True)
+    solicitud = models.ForeignKey('SolicitudSubtipo', null=True, blank=True, on_delete=models.SET_NULL, related_name='lotes')
 
 # Modelo para los artículos de la compra por lote
 class CompraLoteItem(models.Model):
