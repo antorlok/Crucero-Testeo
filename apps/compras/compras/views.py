@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def procesar_materiales_solicitud_view(request, solicitud_id):
     from .models import SolicitudSubtipo, SolicitudSubtipoItem, Proveedores, CompraLote, CompraLoteItem
+    from .signals import solicitud_compra_administracion
     solicitud = get_object_or_404(SolicitudSubtipo, id=solicitud_id)
     materiales = solicitud.items.all()
     proveedores = Proveedores.objects.filter(tipo=solicitud.tipo, subtipo=solicitud.subtipo)
@@ -16,6 +17,7 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
         # Guardar la compra por lote
         proveedor_id = request.POST.get('proveedor_id')
         proveedor = Proveedores.objects.get(id=proveedor_id) if proveedor_id else None
+        presupuesto_lote = request.POST.get('presupuesto_lote') or 0
         compra_lote = CompraLote.objects.create(
             empresa_nombre=request.POST.get('empresa_nombre', ''),
             empresa_contacto=request.POST.get('empresa_contacto', ''),
@@ -23,7 +25,7 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
             proveedor=proveedor,
             puerto_entrega=request.POST.get('puerto_entrega', ''),
             notas_compra=request.POST.get('notas_compra', ''),
-            presupuesto_lote=request.POST.get('presupuesto_lote') or 0,
+            presupuesto_lote=presupuesto_lote,
             estado='registrada',
         )
         for item in materiales:
@@ -35,6 +37,8 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
                 medida=item.medida,
                 cantidad=cantidad or 0
             )
+        # Enviar signal a administración
+        solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
         solicitud.procesada = True
         solicitud.save()
         return redirect('lista_solicitudes')
