@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Historial de Compras</title>
     <link rel="stylesheet" href="{% static 'styles/styles_compras.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/historial_compras.css' %}">
 </head>
 
 <!-- si se usa -->
@@ -29,7 +30,7 @@
             </thead>
             <tbody>
                 {% for compra in compras_lote %}
-                <tr>
+                <tr class="{% if compra.get_estado_display|lower == 'exitosa' %}estado-exitosa{% elif compra.get_estado_display|lower == 'defectuosa' %}estado-defectuosa{% elif compra.get_estado_display|lower == 'cancelada' %}estado-cancelada{% endif %}">
                     <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
                     <td>{{ compra.empresa_nombre }}</td>
                     <td>{{ compra.empresa_contacto }}</td>

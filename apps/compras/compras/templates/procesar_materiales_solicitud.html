@@ -1,8 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Procesar materiales de la solicitud #{{ solicitud.id }}</title>
+    <link rel="stylesheet" href="{% static 'styles/procesar_materiales_solicitud.css' %}">
 </head>
 <body>
     <h2>Procesar materiales de la solicitud #{{ solicitud.id }}</h2>
@@ -84,8 +86,8 @@
             <legend><b>Presupuesto por lote</b></legend>
             <input type="number" name="presupuesto_lote" min="0" step="0.01" placeholder="Monto del presupuesto en USD">
         </fieldset>
-        <button type="submit">Procesar compra</button>
-        <a href="{% url 'lista_solicitudes' %}">Cancelar</a>
+    <button type="submit">Procesar compra</button>
+    <button type="button" onclick="window.location.href='{% url 'lista_solicitudes' %}'">Cancelar</button>
     </form>
 </body>
 </html>
