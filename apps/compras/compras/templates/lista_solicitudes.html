@@ -8,33 +8,72 @@
 </head>
 <body>
     <a href="{% url 'dashboard' %}"><button>Volver</button></a>
-    <h2>Lista de Solicitudes de Compra</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID Solicitud</th>
-                <th>Tipo</th>
-                <th>Subtipo</th>
-                <th>Procesada</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for solicitud in solicitudes %}
-            <tr>
-                <td>{{ solicitud.id }}</td>
-                <td>{{ solicitud.tipo }}</td>
-                <td>{{ solicitud.subtipo }}</td>
-                <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
-                <td>
-                    <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
-                    <a href="{% url 'procesar_materiales_solicitud' solicitud.id %}"><button {% if solicitud.procesada %}disabled{% endif %}>Procesar</button></a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="5">No hay solicitudes registradas.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div style="display: flex; flex-direction: row; align-items: flex-start;">
+        <div style="flex: 1;">
+            <h2>Lista de Solicitudes de Compra</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Solicitud</th>
+                        <th>Tipo</th>
+                        <th>Subtipo</th>
+                        <th>Procesada</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for solicitud in solicitudes %}
+                    <tr>
+                        <td>{{ solicitud.id }}</td>
+                        <td>{{ solicitud.tipo }}</td>
+                        <td>{{ solicitud.subtipo }}</td>
+                        <td>{% if solicitud.procesada %}Sí{% else %}No{% endif %}</td>
+                        <td>
+                            <a href="{% url 'detalle_solicitud' solicitud.id %}"><button>Ver detalles</button></a>
+                            <a href="{% url 'procesar_materiales_solicitud' solicitud.id %}"><button {% if solicitud.procesada %}disabled{% endif %}>Procesar</button></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5">No hay solicitudes registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="flex: 2; margin-left: 40px;">
+            <h2>Compras por Lote Registradas</h2>
+            <table border="1" style="width:100%;">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Empresa</th>
+                    <th>Proveedor</th>
+                    <th>Puerto</th>
+                    <th>Presupuesto</th>
+                    <th>Notas</th>
+                    <th>Estado</th>
+                    <th>Artículos</th>
+                </tr>
+                {% for compra in compras_lote %}
+                <tr>
+                    <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
+                    <td>{{ compra.empresa_nombre }}<br>{{ compra.empresa_contacto }}<br>{{ compra.empresa_ubicacion }}</td>
+                    <td>{{ compra.proveedor.name }}<br>{{ compra.proveedor.contact }}</td>
+                    <td>{{ compra.puerto_entrega }}</td>
+                    <td>${{ compra.presupuesto_lote }}</td>
+                    <td>{{ compra.notas_compra }}</td>
+                    <td>{{ compra.get_estado_display }}</td>
+                    <td>
+                        <ul>
+                        {% for item in compra.items.all %}
+                            <li>ID: {{ item.producto_id }} - {{ item.nombre }} ({{ item.cantidad }} {{ item.medida }})</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">No hay compras registradas.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </body>
 </html>
