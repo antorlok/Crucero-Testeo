@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Compras por Lote Registradas</title>
+    <title>Historial de Compras por Lote</title>
 </head>
 <body>
+    <h2>Historial de Compras por Lote</h2>
     <a href="{% url 'dashboard' %}"><button>Volver</button></a>
-    <h2>Compras por Lote Registradas</h2>
     <table border="1" style="width:100%;">
         <tr>
             <th>Fecha</th>
@@ -15,18 +15,18 @@
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
-        {% for compra in compras_lote %}
+        {% for compra in compras %}
         <tr>
             <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
             <td>{{ compra.proveedor.name }}</td>
             <td>${{ compra.presupuesto_lote }}</td>
             <td>{{ compra.get_estado_display }}</td>
             <td>
-                <a href="{% url 'detalle_compra_lote_registrada' compra.id %}"><button>Ver detalles</button></a>
+                <a href="{% url 'detalle_compra_lote' compra.id %}"><button>Ver detalles</button></a>
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="5">No hay compras registradas.</td></tr>
+        <tr><td colspan="5">No hay compras en el historial.</td></tr>
         {% endfor %}
     </table>
 </body>

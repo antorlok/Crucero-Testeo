@@ -24,9 +24,24 @@ def solicitud_compra_administracion(id, monto, mensaje=None):
 # from compras.signals import decision_solicitud_signal
 
 # @receiver(decision_solicitud_signal)
+from .models import CompraLote
 def manejar_decision_solicitud(sender, id, aceptado, mensaje, **kwargs):
-    print(f"ID: {id} | Aceptado: {aceptado} | Mensaje: {mensaje}")
-    # Aquí va la lógica que necesites
+	try:
+		compra_lote = CompraLote.objects.get(id=id)
+		if aceptado:
+			compra_lote.estado = 'En espera por revisión'
+			# Enviar signal con el lote completo
+			lote_signal = Signal()
+			lote_signal.send(sender=None, compra_lote=compra_lote)
+		else:
+			compra_lote.estado = 'Cancelada'
+			solicitud = compra_lote.solicitud
+			if solicitud and solicitud.procesada:
+				solicitud.procesada = False
+				solicitud.save()
+		compra_lote.save()
+	except CompraLote.DoesNotExist:
+		print(f"No se encontró CompraLote con id={id}")
 
 ###  ALMACEN
 
@@ -88,6 +103,27 @@ def manejar_productos_signal(sender, productos, **kwargs):
     # producto.cantidad (No es un atributo, se calcula según la cantidad que tiene cada lote registrado de ese producto)
     # producto.cantidad_ideal
     # producto.medida
-	
 
-### Envio a almacen
+# receptor para recibir la decision de la solicitud de compra desde almacen
+from almacen.signals import decision_solicitud_almacen
+
+@receiver(decision_solicitud_almacen)
+def manejar_decision_solicitud_almacen(sender, id, aceptado, mensaje, **kwargs):
+	try:
+		compra_lote = CompraLote.objects.get(id=id)
+		if aceptado:
+			compra_lote.estado = 'Exitosa'
+		else:
+			compra_lote.estado = 'Defectuosa'
+			# Buscar y actualizar la solicitud asociada usando la relación directa
+			solicitud = compra_lote.solicitud
+			if solicitud and solicitud.procesada:
+				solicitud.procesada = False
+				solicitud.save()
+				# Nuevo signal para compras defectuosas
+				compra_defectosa = Signal()
+				# Enviar el nuevo signal compra_defectosa con monto y mensaje
+				compra_defectosa.send(sender=None, monto=compra_lote.presupuesto_lote, mensaje=mensaje)
+		compra_lote.save()
+	except CompraLote.DoesNotExist:
+		print(f"No se encontró CompraLote con id={id}")

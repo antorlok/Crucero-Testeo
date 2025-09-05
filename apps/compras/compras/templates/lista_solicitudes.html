@@ -42,36 +42,40 @@
         </div>
         <div style="flex: 2; margin-left: 40px;">
             <h2>Compras por Lote Registradas</h2>
+            <a href="{% url 'historial_compras_lote' %}"><button>Ver Historial de Compras por Lote</button></a>
             <table border="1" style="width:100%;">
                 <tr>
                     <th>Fecha</th>
-                    <th>Empresa</th>
                     <th>Proveedor</th>
-                    <th>Puerto</th>
                     <th>Presupuesto</th>
-                    <th>Notas</th>
                     <th>Estado</th>
-                    <th>Artículos</th>
+                    <th>Acciones</th>
                 </tr>
                 {% for compra in compras_lote %}
                 <tr>
                     <td>{{ compra.fecha|date:"Y-m-d H:i" }}</td>
-                    <td>{{ compra.empresa_nombre }}<br>{{ compra.empresa_contacto }}<br>{{ compra.empresa_ubicacion }}</td>
-                    <td>{{ compra.proveedor.name }}<br>{{ compra.proveedor.contact }}</td>
-                    <td>{{ compra.puerto_entrega }}</td>
+                    <td>{{ compra.proveedor.name }}</td>
                     <td>${{ compra.presupuesto_lote }}</td>
-                    <td>{{ compra.notas_compra }}</td>
-                    <td>{{ compra.get_estado_display }}</td>
                     <td>
-                        <ul>
-                        {% for item in compra.items.all %}
-                            <li>ID: {{ item.producto_id }} - {{ item.nombre }} ({{ item.cantidad }} {{ item.medida }})</li>
-                        {% endfor %}
-                        </ul>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="compralote_id" value="{{ compra.id }}">
+                            <select name="nuevo_estado">
+                                <option value="registrada" {% if compra.estado == 'registrada' %}selected{% endif %}>Registrada</option>
+                                <option value="espera_revision" {% if compra.estado == 'espera_revision' %}selected{% endif %}>En espera por revisión</option>
+                                <option value="exitosa" {% if compra.estado == 'exitosa' %}selected{% endif %}>Exitosa</option>
+                                <option value="defectuosa" {% if compra.estado == 'defectuosa' %}selected{% endif %}>Defectuosa</option>
+                                <option value="cancelada" {% if compra.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                            <button type="submit">Guardar</button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{% url 'detalle_compra_lote' compra.id %}"><button>Ver detalles</button></a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8">No hay compras registradas.</td></tr>
+                <tr><td colspan="5">No hay compras registradas.</td></tr>
                 {% endfor %}
             </table>
         </div>
