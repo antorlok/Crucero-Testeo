@@ -167,33 +167,42 @@
             </div>
             <!-- Contenido de Compras oculto por defecto -->
             <div class="dashboard-content" id="compras-content" style="display:none">
-                
+                <script>
+                // Cambiar título y subtítulo al mostrar compras
+                document.addEventListener('DOMContentLoaded', function() {
+                    const comprasContent = document.getElementById('compras-content');
+                    if (comprasContent && comprasContent.style.display !== 'none') {
+                        document.querySelector('.page-title').textContent = 'Compras';
+                        document.querySelector('.page-subtitle').textContent = 'Gestión de compras, proveedores y solicitudes';
+                    }
+                });
+                </script>
                 <div class="quick-actions-section">
                     <div class="quick-actions-grid">
-                        <a href="#" class="quick-action-card" onclick="mostrarNuevaCompra(event)">
-                            <div class="action-icon">
-                                <img src="/storage/vectors/briefcase-svgrepo-com.svg" alt="Compras" class="action-icon-img">
-                            </div>
-                            <h3>Compras</h3>
-                            <p>Realizar y gestionar compras</p>
+                        <a href="{% url 'compras_registradas' %}" class="quick-action-card">
+                                <div class="action-icon" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                                    <img src="{% static 'img/Compras.jpg' %}" alt="Icono Compras" class="action-icon-img" style="width:40px;height:40px;">
+                                </div>
+                                <h3>Compras</h3>
+                                <p>Realizar y gestionar compras</p>
                         </a>
-                        <a href="#" class="quick-action-card">
-                            <div class="action-icon">
-                                <img src="/storage/vectors/clipboard-svgrepo-com.svg" alt="Solicitudes" class="action-icon-img">
+                        <a href="/solicitudes/" class="quick-action-card">
+                            <div class="action-icon" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                                <img src="{% static 'img/Solicitud.jpg' %}" alt="Icono Solicitudes" class="action-icon-img" style="width:40px;height:40px;">
                             </div>
                             <h3>Solicitudes</h3>
                             <p>Ver y gestionar solicitudes de compra</p>
                         </a>
                          <a href="/proveedores/" class="quick-action-card">
                             <div class="action-icon">
-                                <img src="/storage/vectors/user-list-svgrepo-com.svg" alt="Proveedores" class="action-icon-img">
+                                <img src="{% static 'img/Red-Proveedores.jpg' %}" alt="Proveedores" class="action-icon-img">
                             </div>
                             <h3>Red de Proveedores</h3>
                             <p>Gestionar proveedores registrados</p>
                         </a>
-                        <a href="#" class="quick-action-card">
-                            <div class="action-icon">
-                                <img src="/storage/vectors/clipboard-svgrepo-com.svg" alt="Resumen" class="action-icon-img">
+                        <a href="{% url 'historial_compras' %}" class="quick-action-card">
+                            <div class="action-icon" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                                <img src="{% static 'img/Historial.jpg' %}" alt="Icono Historial" class="action-icon-img" style="width:40px;height:40px;">
                             </div>
                             <h3>Historial de Compras</h3>
                             <p>Ver el historial y resumen de compras</p>
