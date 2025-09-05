@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="{% static 'styles/detalle_compra_lote.css' %}">
 </head>
 <body>
+    {% if from_param == 'historial' %}
+        <a href="{% url 'historial_compras' %}"><button type="button" class="btn-volver">Volver</button></a>
+    {% else %}
+        <a href="{% url 'lista_solicitudes' %}"><button type="button" class="btn-volver">Volver</button></a>
+    {% endif %}
     <h2>Detalle de Compra por Lote</h2>
-    <a href="{% url 'lista_solicitudes' %}"><button type="button" class="btn-volver">Volver</button></a>
     <fieldset style="margin-bottom:20px;">
         <legend><b>Datos de la Empresa</b></legend>
         <label>Nombre de la empresa:</label>

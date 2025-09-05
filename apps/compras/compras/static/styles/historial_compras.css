@@ -29,6 +29,10 @@ h1 {
     font-weight: 600;
 }
 
+a {
+    text-decoration: none;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -76,7 +80,7 @@ button {
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s;
-    margin-top: 18px;
+    /* margin-top: 18px; */
     margin-left: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     display: block;

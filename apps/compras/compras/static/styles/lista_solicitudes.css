@@ -1,3 +1,7 @@
+.volver {
+	margin: 20px;
+}
+
 .detalle-container p,
 .detalle-container h3 {
 	text-align: center;
@@ -6,6 +10,12 @@
 	text-align: center;
 	list-style-position: inside;
 }
+
+.compras, .solicitudes {
+	flex: 1;
+}
+
+
 /* --- Estilos para detalle de solicitud --- */
 .detalle-container {
 	background: #fff;
@@ -83,7 +93,7 @@ table {
 }
 
 th, td {
-	padding: 14px 18px;
+	padding: 12px 14px;
 	text-align: center;
 }
 

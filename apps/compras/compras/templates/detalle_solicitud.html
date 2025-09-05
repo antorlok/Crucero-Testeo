@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'styles/lista_solicitudes.css' %}">
 </head>
 <body>
+    <a href="{% url 'lista_solicitudes' %}"><button class="volver">Volver</button></a>
     <div style="text-align: center;">
         <h2>Detalle de Solicitud de Compra #{{ solicitud.id }}</h2>
         <p><strong>ID Solicitud:</strong> {{ solicitud.id }}</p>
@@ -15,7 +16,7 @@
         <p><strong>Tipo:</strong> {{ tipo }}</p>
         <p><strong>Subtipo:</strong> {{ subtipo }}</p>
         <h3>Productos a Comprar</h3>
-        <table style="margin: 0 auto;">
+        <table border=1 style="margin: 0 auto;">
             <thead>
                 <tr>
                     <th>ID Producto</th>
@@ -39,6 +40,5 @@
         </table>
     </div>
 
-    <a href="{% url 'lista_solicitudes' %}"><button>Volver</button></a>
 </body>
 </html>

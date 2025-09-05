@@ -24,7 +24,6 @@
                     <th>Puerto Entrega</th>
                     <th>Presupuesto</th>
                     <th>Estado</th>
-                    <th>Notas</th>
                     <th>Artículos</th>
                 </tr>
             </thead>
@@ -39,13 +38,8 @@
                     <td>{{ compra.puerto_entrega }}</td>
                     <td>${{ compra.presupuesto_lote }}</td>
                     <td>{{ compra.get_estado_display }}</td>
-                    <td>{{ compra.notas_compra }}</td>
                     <td>
-                        <ul>
-                        {% for item in compra.items.all %}
-                            <li>{{ item.nombre }} ({{ item.cantidad }} {{ item.medida }})</li>
-                        {% endfor %}
-                        </ul>
+                        <a href="{% url 'detalle_compra_lote' compra.id %}?from=historial"><button>Ver detalles</button></a>
                     </td>
                 </tr>
                 {% empty %}
