@@ -52,7 +52,7 @@
                             <span class="nav-text">Bares</span>
                         </a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item" id="entretenimiento-nav-item">
                         <a href="#" class="nav-link" onclick="mostrarEntretenimiento(); return false;">
                             <span class="nav-text">Entretenimiento</span>
                         </a>
@@ -226,7 +226,9 @@
             event.preventDefault();
             document.getElementById('entretenimiento-content').style.display = 'none';
             document.getElementById('compras-content').style.display = 'block';
-            document.getElementById('proveedores-content').style.display = 'none';
+            if(document.getElementById('proveedores-content')) {
+                document.getElementById('proveedores-content').style.display = 'none';
+            }
             document.querySelector('.page-title').textContent = 'Compras';
             document.querySelector('.page-subtitle').textContent = 'Gestión de compras, proveedores y solicitudes';
             document.querySelectorAll('.nav-item').forEach(function(item){
@@ -247,13 +249,16 @@
         }
         function mostrarEntretenimiento() {
             document.getElementById('compras-content').style.display = 'none';
-            document.getElementById('proveedores-content').style.display = 'none';
+            if(document.getElementById('proveedores-content')) {
+                document.getElementById('proveedores-content').style.display = 'none';
+            }
             document.getElementById('entretenimiento-content').style.display = 'block';
             document.querySelector('.page-title').textContent = 'Entretenimiento';
             document.querySelector('.page-subtitle').textContent = 'Gestión de actividades y eventos de entretenimiento';
             document.querySelectorAll('.nav-item').forEach(function(item){
                 item.classList.remove('active');
             });
+            document.getElementById('entretenimiento-nav-item').classList.add('active');
         }
 
         function mostrarNuevaCompra(event) {
