@@ -92,12 +92,20 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
 
     if request.method == 'POST' and proveedor_seleccionado:
         presupuesto_lote = request.POST.get('presupuesto_lote') or 0
+        # Validar puerto de entrega: si el proveedor tiene países asignados,
+        # asegurar que el puerto guardado corresponda a uno de los puertos disponibles
+        puerto_post = (request.POST.get('puerto_entrega') or '').strip()
+        if puertos_disponibles:
+            if not puerto_post or puerto_post not in puertos_disponibles:
+                # asignar primer puerto válido para el/los países del proveedor
+                puerto_post = puertos_disponibles[0]
+
         compra_lote = CompraLote.objects.create(
             empresa_nombre=request.POST.get('empresa_nombre', ''),
             empresa_contacto=request.POST.get('empresa_contacto', ''),
             empresa_ubicacion=request.POST.get('empresa_ubicacion', ''),
             proveedor=proveedor_seleccionado,
-            puerto_entrega=request.POST.get('puerto_entrega', ''),
+            puerto_entrega=puerto_post,
             notas_compra=request.POST.get('notas_compra', ''),
             presupuesto_lote=presupuesto_lote,
             estado='registrada',
