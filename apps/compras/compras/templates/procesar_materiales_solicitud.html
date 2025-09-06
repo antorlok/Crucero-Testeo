@@ -22,7 +22,7 @@
         <fieldset style="margin-bottom:20px;">
             <legend><b>Datos del Proveedor</b></legend>
             <label>Proveedor:</label>
-            <select name="proveedor_id" id="proveedor_id_select" required onchange="actualizarPuertosPorProveedor()">
+            <select name="proveedor_id" id="proveedor_id_select" required>
                 <option value="">Seleccione un proveedor</option>
                 {% for proveedor in proveedores %}
                     <option value="{{ proveedor.id }}" {% if proveedor_id == proveedor.id|stringformat:'s' %}selected{% endif %}>{{ proveedor.name }} ({{ proveedor.contact }})</option>
@@ -38,11 +38,22 @@
                 {% endfor %}
             </select><br>
             <script>
-            function actualizarPuertosPorProveedor() {
-                var proveedorId = document.getElementById('proveedor_id_select').value;
-                var url = window.location.pathname + '?proveedor_id=' + proveedorId;
-                window.location.href = url;
-            }
+            // Diccionario de puertos por proveedor (inyectado desde la vista)
+            const puertosPorProveedor = {{ puertos_por_proveedor_json|safe }};
+            const proveedorSelect = document.getElementById('proveedor_id_select');
+            const puertoSelect = document.getElementById('puerto_entrega_select');
+            proveedorSelect.addEventListener('change', function() {
+                const proveedorId = this.value;
+                puertoSelect.innerHTML = '<option value="">Seleccione un puerto</option>';
+                if (puertosPorProveedor[proveedorId]) {
+                    puertosPorProveedor[proveedorId].forEach(function(puerto) {
+                        const option = document.createElement('option');
+                        option.value = puerto;
+                        option.textContent = puerto;
+                        puertoSelect.appendChild(option);
+                    });
+                }
+            });
             </script>
         </fieldset>
         <fieldset>
