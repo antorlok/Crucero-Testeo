@@ -1,11 +1,40 @@
 from django.shortcuts import get_object_or_404
+from django.dispatch import Signal
+
 # Vista para ver detalles de una compra por lote
 def detalle_compra_lote_view(request, compra_id):
     from .models import CompraLote
     compra = get_object_or_404(CompraLote, id=compra_id)
     from_param = request.GET.get('from', '')
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'aceptar':
+            compra.estado = 'Esperando por revision'
+            lote_signal = Signal()
+            lote_signal.send(sender=None, compra_lote=compra)
+            compra.save()
+        elif accion == 'rechazar':
+            mensaje = request.POST.get('mensaje', '')
+            compra.estado = 'cancelada'
+            solicitud = compra.solicitud
+            if solicitud and solicitud.procesada:
+                compra.notas_compra = mensaje
+                solicitud.procesada = False
+                solicitud.save()
+            compra.save()
+        elif accion == 'finalizar':
+            compra.estado = 'exitosa'
+            compra.save()
+        elif accion == 'defectuosa':
+            compra.estado = 'defectuosa'
+            compra.save()
+        # Redirigir a la misma página para ver el cambio reflejado
+        from django.shortcuts import redirect
+        return redirect('detalle_compra_lote', compra_id=compra.id)
     return render(request, 'detalle_compra_lote.html', {'compra': compra, 'from_param': from_param})
+
 # Vista para listar compras por lote registradas
+
 def compras_lote_registradas_view(request):
     from .models import CompraLote
     if request.method == 'POST':
@@ -120,14 +149,18 @@ def procesar_materiales_solicitud_view(request, solicitud_id):
                 medida=item.medida,
                 cantidad=cantidad or 0
             )
+
+
         # Enviar signal a administración, descomentar
         # solicitud_compra_administracion(id=solicitud.id, monto=presupuesto_lote)
-        from django.dispatch import Signal
-        compra_lote.estado = 'En espera por revisión'
-        lote_signal = Signal()
-        lote_signal.send(sender=None, compra_lote=compra_lote)
+        compra_lote.estado = 'registrada'
+    
+
+
+
         solicitud.procesada = True
         solicitud.save()
+        compra_lote.save()
         return redirect('lista_solicitudes')
     return render(request, 'procesar_materiales_solicitud.html', {
         'solicitud': solicitud,
@@ -299,13 +332,18 @@ def lista_solicitudes_view(request):
             except CompraLote.DoesNotExist:
                 pass
     solicitudes = SolicitudSubtipo.objects.filter(procesada=False).order_by('-id')
-    #### Revisar estados
+    # Excluir solo compras_lote activas (no canceladas)
     compras_lote = CompraLote.objects.exclude(estado__in=['exitosa', 'defectuosa', 'cancelada']).order_by('-fecha')
+    # Mostrar solicitudes aunque tengan compra_lote asociada cancelada
     return render(request, 'lista_solicitudes.html', {'solicitudes': solicitudes, 'compras_lote': compras_lote})
 
 
 @csrf_protect
 def dashboard_view(request):
+    # Si se presiona el botón de crear solicitudes simuladas
+    if request.method == 'POST' and request.POST.get('accion') == 'crear_simuladas':
+        from .simulador import crear_solicitudes_simuladas_util
+        crear_solicitudes_simuladas_util()
     return render(request, 'index.html')
 
 @csrf_protect
@@ -380,4 +418,4 @@ def historial_compras_view(request):
     from .models import Compra, CompraLote
     compras = Compra.objects.filter(estado__in=['exitosa', 'cancelada']).order_by('-fecha')
     compras_lote = CompraLote.objects.filter(estado__in=['exitosa', 'defectuosa', 'cancelada']).order_by('-fecha')
-    return render(request, 'historial_compras.html', {'compras': compras, 'compras_lote': compras_lote})
+    return render(request, 'historial_compras.html', {'compras_lote': compras_lote})

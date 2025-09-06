@@ -52,7 +52,7 @@
                             <span class="nav-text">Bares</span>
                         </a>
                     </li>
-                    <li class="nav-item" id="entretenimiento-nav-item">
+                    <li class="nav-item active">
                         <a href="#" class="nav-link" onclick="mostrarEntretenimiento(); return false;">
                             <span class="nav-text">Entretenimiento</span>
                         </a>
@@ -178,6 +178,10 @@
                 });
                 </script>
                 <div class="quick-actions-section">
+                    <form method="post" style="margin-bottom: 20px;">
+                        {% csrf_token %}
+                        <button type="submit" name="accion" value="crear_simuladas" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 4px;">Crear solicitudes simuladas grandes</button>
+                    </form>
                     <div class="quick-actions-grid">
                         <!-- Primer botón de 'comprar' eliminado por solicitud -->
                         <a href="/solicitudes/" class="quick-action-card">
@@ -226,9 +230,7 @@
             event.preventDefault();
             document.getElementById('entretenimiento-content').style.display = 'none';
             document.getElementById('compras-content').style.display = 'block';
-            if(document.getElementById('proveedores-content')) {
-                document.getElementById('proveedores-content').style.display = 'none';
-            }
+            document.getElementById('proveedores-content').style.display = 'none';
             document.querySelector('.page-title').textContent = 'Compras';
             document.querySelector('.page-subtitle').textContent = 'Gestión de compras, proveedores y solicitudes';
             document.querySelectorAll('.nav-item').forEach(function(item){
@@ -249,16 +251,13 @@
         }
         function mostrarEntretenimiento() {
             document.getElementById('compras-content').style.display = 'none';
-            if(document.getElementById('proveedores-content')) {
-                document.getElementById('proveedores-content').style.display = 'none';
-            }
+            document.getElementById('proveedores-content').style.display = 'none';
             document.getElementById('entretenimiento-content').style.display = 'block';
             document.querySelector('.page-title').textContent = 'Entretenimiento';
             document.querySelector('.page-subtitle').textContent = 'Gestión de actividades y eventos de entretenimiento';
             document.querySelectorAll('.nav-item').forEach(function(item){
                 item.classList.remove('active');
             });
-            document.getElementById('entretenimiento-nav-item').classList.add('active');
         }
 
         function mostrarNuevaCompra(event) {
